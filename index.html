@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Image Creator Pro</title>
 
@@ -17,9 +17,8 @@
 
 body{
     font-family:'Inter',sans-serif;
-    background:#111827;
-    color:#fff;
-    min-height:100vh;
+    background:#0f172a;
+    color:white;
     padding:30px;
 }
 
@@ -46,10 +45,10 @@ h1{
 }
 
 .controls{
-    background:#1f2937;
+    background:#111827;
     border-radius:20px;
     padding:25px;
-    border:1px solid #374151;
+    border:1px solid #1e293b;
     height:fit-content;
 }
 
@@ -61,46 +60,44 @@ label{
     display:block;
     margin-bottom:8px;
     font-weight:600;
-    font-size:14px;
 }
 
 input[type="text"]{
     width:100%;
     padding:14px;
     border-radius:12px;
-    border:none;
-    background:#111827;
+    border:1px solid #334155;
+    background:#0f172a;
     color:white;
     font-size:15px;
-    border:1px solid #374151;
 }
 
 input[type="file"]{
     width:100%;
-    background:#111827;
-    border:1px dashed #4b5563;
     padding:12px;
     border-radius:12px;
-    color:#d1d5db;
+    border:1px dashed #475569;
+    background:#0f172a;
+    color:#cbd5e1;
 }
 
 .button-row{
     display:flex;
     gap:12px;
     flex-wrap:wrap;
-    margin-top:10px;
+    margin-top:15px;
 }
 
 button{
     flex:1;
     min-width:140px;
-    padding:14px 18px;
+    padding:14px;
     border:none;
     border-radius:14px;
+    cursor:pointer;
     font-weight:700;
     font-size:15px;
-    cursor:pointer;
-    transition:0.2s ease;
+    transition:0.2s;
 }
 
 .generate-btn{
@@ -121,26 +118,26 @@ button{
     background:#059669;
 }
 
-.preview-area{
+.preview{
     display:flex;
     justify-content:center;
     align-items:flex-start;
 }
 
-.canvas-wrapper{
-    background:#1f2937;
-    border-radius:24px;
+.canvas-wrap{
+    background:#111827;
     padding:20px;
-    border:1px solid #374151;
-    width:fit-content;
+    border-radius:20px;
+    border:1px solid #1e293b;
 }
 
 canvas{
     width:100%;
     max-width:700px;
-    aspect-ratio:1 / 1;
-    border-radius:20px;
-    background:#000;
+    aspect-ratio:1/1;
+    background:black;
+    border-radius:18px;
+    display:block;
 }
 
 .note{
@@ -156,14 +153,6 @@ canvas{
         grid-template-columns:1fr;
     }
 
-    h1{
-        font-size:34px;
-    }
-
-    .preview-area{
-        justify-content:center;
-    }
-
 }
 </style>
 </head>
@@ -173,8 +162,9 @@ canvas{
 <div class="container">
 
     <h1>Image Creator Pro</h1>
+
     <div class="subtitle">
-        Create Instagram-ready football player graphics directly in your browser.
+        Create Instagram-ready football graphics directly in your browser.
     </div>
 
     <div class="layout">
@@ -193,17 +183,17 @@ canvas{
 
             <div class="control-group">
                 <label>Player Name</label>
-                <input type="text" id="playerName" placeholder="e.g. John Smith">
+                <input type="text" id="playerName" placeholder="Player Name">
             </div>
 
             <div class="control-group">
                 <label>Club Name</label>
-                <input type="text" id="clubName" placeholder="e.g. Runcorn Town FC">
+                <input type="text" id="clubName" placeholder="Club Name">
             </div>
 
             <div class="control-group">
                 <label>Player Sponsor</label>
-                <input type="text" id="playerSponsor" placeholder="e.g. Sponsored by ABC Ltd">
+                <input type="text" id="playerSponsor" placeholder="Sponsored by...">
             </div>
 
             <div class="button-row">
@@ -217,15 +207,15 @@ canvas{
             </div>
 
             <div class="note">
-                Instagram-ready square format (1080×1080).<br>
-                Works perfectly on GitHub Pages with no backend required.
+                Output size: 1080 × 1080<br>
+                Perfect for Instagram posts and GitHub Pages hosting.
             </div>
 
         </div>
 
-        <div class="preview-area">
+        <div class="preview">
 
-            <div class="canvas-wrapper">
+            <div class="canvas-wrap">
                 <canvas id="canvas" width="1080" height="1080"></canvas>
             </div>
 
@@ -246,136 +236,216 @@ const playerNameInput = document.getElementById('playerName');
 const clubNameInput = document.getElementById('clubName');
 const sponsorInput = document.getElementById('playerSponsor');
 
-const generateBtn = document.getElementById('generateBtn');
-const downloadBtn = document.getElementById('downloadBtn');
-
-let playerImage = null;
-let badgeImage = null;
+let playerImg = null;
+let badgeImg = null;
 
 function loadImage(file, callback){
+
     if(!file) return;
 
     const reader = new FileReader();
 
-    reader.onload = function(e){
+    reader.onload = function(event){
+
         const img = new Image();
 
         img.onload = function(){
             callback(img);
         };
 
-        img.src = e.target.result;
+        img.src = event.target.result;
     };
 
     reader.readAsDataURL(file);
 }
 
-playerInput.addEventListener('change', (e)=>{
-    loadImage(e.target.files[0], (img)=>{
-        playerImage = img;
+playerInput.addEventListener('change', function(e){
+
+    loadImage(e.target.files[0], function(img){
+
+        playerImg = img;
+        generateImage();
     });
+
 });
 
-badgeInput.addEventListener('change', (e)=>{
-    loadImage(e.target.files[0], (img)=>{
-        badgeImage = img;
+badgeInput.addEventListener('change', function(e){
+
+    loadImage(e.target.files[0], function(img){
+
+        badgeImg = img;
+        generateImage();
     });
+
 });
 
 function drawBackground(){
+
     const gradient = ctx.createLinearGradient(0,0,1080,1080);
 
     gradient.addColorStop(0, '#0f172a');
-    gradient.addColorStop(1, '#1d4ed8');
+    gradient.addColorStop(1, '#2563eb');
 
     ctx.fillStyle = gradient;
     ctx.fillRect(0,0,1080,1080);
-
-    // Decorative circles
-    ctx.globalAlpha = 0.15;
-
-    ctx.beginPath();
-    ctx.arc(900,180,200,0,Math.PI*2);
-    ctx.fillStyle = '#ffffff';
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.arc(150,950,250,0,Math.PI*2);
-    ctx.fill();
-
-    ctx.globalAlpha = 1;
 }
 
-function drawPlayer(){
-    if(!playerImage) return;
+function drawPlayerImage(){
 
-    const maxWidth = 760;
-    const maxHeight = 820;
+    if(!playerImg) return;
 
-    let width = playerImage.width;
-    let height = playerImage.height;
+    /*
+        THIS FIXES THE "IMAGE INSIDE IMAGE" ISSUE
 
-    const scale = Math.min(maxWidth / width, maxHeight / height);
+        The previous version scaled the whole image into
+        a small area which caused repeated-looking visuals.
 
-    width *= scale;
-    height *= scale;
+        This version properly crops and fits the image
+        like a professional poster creator.
+    */
 
-    const x = (1080 - width) / 2;
-    const y = 150;
+    const targetX = 140;
+    const targetY = 120;
+    const targetWidth = 800;
+    const targetHeight = 760;
 
-    ctx.drawImage(playerImage, x, y, width, height);
+    const imgRatio = playerImg.width / playerImg.height;
+    const targetRatio = targetWidth / targetHeight;
+
+    let sx, sy, sWidth, sHeight;
+
+    if(imgRatio > targetRatio){
+
+        // Crop left/right
+        sHeight = playerImg.height;
+        sWidth = sHeight * targetRatio;
+
+        sx = (playerImg.width - sWidth) / 2;
+        sy = 0;
+
+    } else {
+
+        // Crop top/bottom
+        sWidth = playerImg.width;
+        sHeight = sWidth / targetRatio;
+
+        sx = 0;
+        sy = (playerImg.height - sHeight) / 2;
+    }
+
+    ctx.drawImage(
+        playerImg,
+        sx,
+        sy,
+        sWidth,
+        sHeight,
+        targetX,
+        targetY,
+        targetWidth,
+        targetHeight
+    );
 }
 
 function drawBadge(){
-    if(!badgeImage) return;
+
+    if(!badgeImg) return;
 
     ctx.save();
 
     ctx.beginPath();
-    ctx.arc(150,150,75,0,Math.PI*2);
+    ctx.arc(150,150,70,0,Math.PI*2);
     ctx.closePath();
     ctx.clip();
 
-    ctx.drawImage(badgeImage,75,75,150,150);
+    ctx.drawImage(badgeImg,80,80,140,140);
 
     ctx.restore();
 
-    ctx.lineWidth = 8;
     ctx.strokeStyle = 'white';
+    ctx.lineWidth = 6;
 
     ctx.beginPath();
-    ctx.arc(150,150,75,0,Math.PI*2);
+    ctx.arc(150,150,70,0,Math.PI*2);
     ctx.stroke();
 }
 
 function drawText(){
-    const playerName = playerNameInput.value || 'PLAYER NAME';
-    const clubName = clubNameInput.value || 'CLUB NAME';
-    const sponsor = sponsorInput.value || 'Sponsored by...';
 
-    // Bottom overlay
-    ctx.fillStyle = 'rgba(0,0,0,0.65)';
-    ctx.fillRect(0,780,1080,300);
+    const playerName =
+        playerNameInput.value || 'PLAYER NAME';
+
+    const clubName =
+        clubNameInput.value || 'CLUB NAME';
+
+    const sponsor =
+        sponsorInput.value || 'Sponsored by...';
+
+    // Bottom panel
+    ctx.fillStyle = 'rgba(0,0,0,0.75)';
+    ctx.fillRect(0,790,1080,290);
 
     // Club name
     ctx.fillStyle = '#93c5fd';
     ctx.font = 'bold 42px Inter';
     ctx.textAlign = 'center';
-    ctx.fillText(clubName.toUpperCase(), 540, 860);
+    ctx.fillText(
+        clubName.toUpperCase(),
+        540,
+        860
+    );
 
     // Player name
     ctx.fillStyle = '#ffffff';
     ctx.font = '800 82px Inter';
-    ctx.fillText(playerName.toUpperCase(), 540, 940);
+    ctx.fillText(
+        playerName.toUpperCase(),
+        540,
+        940
+    );
 
     // Sponsor box
     ctx.fillStyle = '#ffffff';
-    ctx.roundRect(240,980,600,58,16);
+
+    roundRect(
+        ctx,
+        250,
+        980,
+        580,
+        60,
+        14
+    );
+
     ctx.fill();
 
     ctx.fillStyle = '#111827';
     ctx.font = '600 30px Inter';
-    ctx.fillText(sponsor, 540, 1018);
+
+    ctx.fillText(
+        sponsor,
+        540,
+        1018
+    );
+}
+
+function roundRect(ctx, x, y, width, height, radius){
+
+    ctx.beginPath();
+
+    ctx.moveTo(x + radius, y);
+
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+
+    ctx.closePath();
 }
 
 function generateImage(){
@@ -383,14 +453,14 @@ function generateImage(){
     ctx.clearRect(0,0,1080,1080);
 
     drawBackground();
-    drawPlayer();
+    drawPlayerImage();
     drawBadge();
     drawText();
 }
 
-generateBtn.addEventListener('click', generateImage);
+document.getElementById('generateBtn').addEventListener('click', generateImage);
 
-downloadBtn.addEventListener('click', ()=>{
+document.getElementById('downloadBtn').addEventListener('click', function(){
 
     generateImage();
 
@@ -402,12 +472,12 @@ downloadBtn.addEventListener('click', ()=>{
         .toLowerCase();
 
     link.download = filename + '.png';
+
     link.href = canvas.toDataURL('image/png');
 
     link.click();
 });
 
-// Initial placeholder render
 generateImage();
 </script>
 
