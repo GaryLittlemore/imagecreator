@@ -45,7 +45,7 @@ h1{
     align-items:start;
 }
 
-/* LEFT */
+/* LEFT PANEL */
 .controls{
     background:#111827;
     border-radius:20px;
@@ -104,7 +104,7 @@ button{
     color:white;
 }
 
-/* RIGHT */
+/* RIGHT PANEL */
 .preview{
     display:flex;
     justify-content:center;
@@ -201,7 +201,6 @@ let badgeImg = null;
 /* LOAD IMAGE */
 function loadImage(file, cb){
     if(!file) return;
-
     const reader = new FileReader();
     reader.onload = e=>{
         const img = new Image();
@@ -258,7 +257,7 @@ function drawBadge(){
     ctx.restore();
 }
 
-/* TEXT (FIXED) */
+/* TEXT (FIXED PERFECT VERTICAL CENTRE) */
 function drawText(){
 
     const player = playerNameInput.value || "Player Name";
@@ -280,18 +279,33 @@ function drawText(){
     ctx.fillStyle = "rgba(0,0,0,0.75)";
     ctx.fillRect(0,860,1080,220);
 
-    /* RESET STYLES (IMPORTANT FIX) */
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
+
+    /* PLAYER AREA (TRUE CENTRE) */
+    const playerAreaY = 860;
+    const playerAreaH = 140;
+
+    ctx.font = "800 72px Inter";
     ctx.textBaseline = "middle";
 
-    /* PLAYER NAME */
-    ctx.font = "800 72px Inter";
-    ctx.fillText(player,540,920);
+    ctx.fillText(
+        player,
+        540,
+        playerAreaY + playerAreaH / 2
+    );
 
-    /* SPONSOR */
+    /* SPONSOR AREA (TRUE CENTRE) */
+    const sponsorAreaY = 1000;
+    const sponsorAreaH = 80;
+
     ctx.font = "600 30px Inter";
-    ctx.fillText(sponsor,540,990);
+
+    ctx.fillText(
+        sponsor,
+        540,
+        sponsorAreaY + sponsorAreaH / 2
+    );
 }
 
 /* DRAW */
