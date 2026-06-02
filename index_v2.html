@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Image Creator Pro - Basic</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    font-family:Inter;
+    background:#0f172a;
+    color:white;
+    padding:20px;
+}
+
+.container{
+    display:grid;
+    grid-template-columns:360px 1fr;
+    gap:20px;
+    max-width:1200px;
+    margin:auto;
+}
+
+.panel{
+    background:#111827;
+    padding:18px;
+    border-radius:14px;
+}
+
+label{
+    display:block;
+    margin-top:10px;
+    font-size:13px;
+    color:#cbd5e1;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    border-radius:10px;
+    border:1px solid #334155;
+    background:#0f172a;
+    color:white;
+    margin-top:5px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    margin-top:10px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.download{
+    background:#10b981;
+    color:white;
+}
+
+canvas{
+    width:100%;
+    max-width:700px;
+    background:black;
+    border-radius:16px;
+    display:block;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- CONTROLS -->
+<div class="panel">
+
+<h2>Image Creator Pro</h2>
+
+<label>Player Image</label>
+<input type="file" id="player">
+
+<label>Club Badge</label>
+<input type="file" id="badge">
+
+<label>Player Name</label>
+<input id="playerName">
+
+<label>Club Name</label>
+<input id="clubName">
+
+<label>Sponsor</label>
+<input id="sponsor">
+
+<label>Zoom</label>
+<input type="range" id="zoom" min="0.5" max="2" step="0.01" value="1">
+
+<button class="download" onclick="download()">Download PNG</button>
+
+</div>
+
+<!-- CANVAS -->
+<canvas id="c" width="1080" height="1080"></canvas>
+
+</div>
+
+<script>
+
+const c = document.getElementById("c");
+const ctx = c.getContext("2d");
+
+let img = null;
+let badge = null;
+
+/*
+    SIMPLE POSITIONING
+*/
+let x = 240;
+let y = 200;
+
+let zoom = 1;
+let dragging = false;
+
+/*
+    DRAW
+*/
+function draw(){
+
+ctx.clearRect(0,0,1080,1080);
+
+/* background */
+const g = ctx.createLinearGradient(0,0,1080,1080);
+g.addColorStop(0,"#0f172a");
+g.addColorStop(1,"#2563eb");
+
+ctx.fillStyle = g;
+ctx.fillRect(0,0,1080,1080);
+
+/* TOP BAR */
+ctx.fillStyle="rgba(0,0,0,0.5)";
+ctx.fillRect(0,0,1080,110);
+
+ctx.fillStyle="#fff";
+ctx.font="800 54px Inter";
+ctx.textAlign="center";
+
+ctx.fillText(
+document.getElementById("clubName").value || "CLUB NAME",
+540,60
+);
+
+/* PLAYER IMAGE */
+if(img){
+ctx.drawImage(img,x,y,600*zoom,500*zoom);
+}
+
+/* BOTTOM BAR */
+ctx.fillStyle="rgba(0,0,0,0.75)";
+ctx.fillRect(0,850,1080,230);
+
+ctx.fillStyle="#fff";
+ctx.font="800 72px Inter";
+ctx.textAlign="center";
+
+ctx.fillText(
+document.getElementById("playerName").value || "PLAYER NAME",
+540,930
+);
+
+ctx.font="600 30px Inter";
+ctx.fillText(
+document.getElementById("sponsor").value || "SPONSOR",
+540,1000
+);
+
+/* BADGE */
+if(badge){
+ctx.drawImage(badge,40,880,120,120);
+}
+
+}
+
+/*
+    IMAGE LOAD
+*/
+function load(file,cb){
+const r=new FileReader();
+r.onload=e=>{
+const i=new Image();
+i.onload=()=>cb(i);
+i.src=e.target.result;
+};
+r.readAsDataURL(file);
+}
+
+/*
+    INPUTS
+*/
+document.getElementById("player").onchange=e=>{
+load(e.target.files[0],i=>{img=i;draw();});
+};
+
+document.getElementById("badge").onchange=e=>{
+load(e.target.files[0],i=>{badge=i;draw();});
+};
+
+document.getElementById("zoom").oninput=e=>{
+zoom = e.target.value;
+draw();
+};
+
+/*
+    SIMPLE DRAG (NO SNAP, NO ROTATION)
+*/
+c.onmousedown=e=>{
+dragging=true;
+};
+
+c.onmouseup=e=>{
+dragging=false;
+};
+
+c.onmousemove=e=>{
+if(!dragging || !img) return;
+
+x = e.offsetX - 300;
+y = e.offsetY - 250;
+
+draw();
+};
+
+/*
+    DOWNLOAD
+*/
+function download(){
+draw();
+const a=document.createElement("a");
+a.download="graphic.png";
+a.href=c.toDataURL();
+a.click();
+}
+
+/*
+    INIT
+*/
+draw();
+
+</script>
+
+</body>
+</html>
