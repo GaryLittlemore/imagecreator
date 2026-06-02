@@ -6,11 +6,153 @@
 
 <title>Image Creator Pro</title>
 
-<!-- FONT -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-<!-- EXTERNAL CSS -->
-<link rel="stylesheet" href="style.css">
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Inter',sans-serif;
+    background:#0f172a;
+    color:white;
+    padding:30px;
+}
+
+.container{
+    max-width:1400px;
+    margin:auto;
+}
+
+h1{
+    font-size:42px;
+    font-weight:800;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#cbd5e1;
+    margin-bottom:30px;
+}
+
+.layout{
+    display:grid;
+    grid-template-columns:380px 1fr;
+    gap:30px;
+    align-items:start;
+}
+
+/* LEFT PANEL */
+.controls{
+    background:#111827;
+    border-radius:20px;
+    padding:25px;
+    border:1px solid #1e293b;
+}
+
+.control-group{
+    margin-bottom:22px;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+input[type="text"]{
+    width:100%;
+    padding:14px;
+    border-radius:12px;
+    border:1px solid #334155;
+    background:#0f172a;
+    color:white;
+    font-size:15px;
+}
+
+input[type="file"]{
+    width:100%;
+    padding:12px;
+    border-radius:12px;
+    border:1px dashed #475569;
+    background:#0f172a;
+    color:#cbd5e1;
+}
+
+/* BUTTONS */
+button{
+    width:100%;
+    padding:14px;
+    margin-top:10px;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+    font-weight:700;
+    font-size:15px;
+    transition:0.2s;
+}
+
+.generate-btn{
+    background:#2563eb;
+    color:white;
+}
+
+.generate-btn:hover{
+    background:#1d4ed8;
+}
+
+.download-btn{
+    background:#10b981;
+    color:white;
+}
+
+.download-btn:hover{
+    background:#059669;
+}
+
+/* RIGHT PANEL */
+.preview{
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+}
+
+.canvas-wrap{
+    background:#111827;
+    border-radius:20px;
+    border:1px solid #1e293b;
+    padding:25px;
+    width:100%;
+    max-width:740px;
+    display:flex;
+    justify-content:center;
+}
+
+canvas{
+    width:100%;
+    max-width:700px;
+    aspect-ratio:1/1;
+    background:black;
+    border-radius:18px;
+    display:block;
+}
+
+.note{
+    margin-top:18px;
+    color:#94a3b8;
+    font-size:13px;
+}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+    .layout{
+        grid-template-columns:1fr;
+    }
+}
+</style>
 
 </head>
 
@@ -23,7 +165,7 @@
 
     <div class="layout">
 
-        <!-- LEFT CONTROLS -->
+        <!-- CONTROLS -->
         <div class="controls">
 
             <div class="control-group">
@@ -58,7 +200,7 @@
 
         </div>
 
-        <!-- RIGHT PREVIEW -->
+        <!-- CANVAS -->
         <div class="preview">
             <div class="canvas-wrap">
                 <canvas id="canvas" width="1080" height="1080"></canvas>
@@ -82,15 +224,15 @@ const sponsorInput = document.getElementById("playerSponsor");
 let playerImg = null;
 let badgeImg = null;
 
-/* IMAGE LOADER */
+/* LOAD IMAGE */
 function loadImage(file, callback){
     if(!file) return;
 
     const reader = new FileReader();
 
-    reader.onload = e => {
+    reader.onload = e=>{
         const img = new Image();
-        img.onload = () => callback(img);
+        img.onload = ()=>callback(img);
         img.src = e.target.result;
     };
 
@@ -122,7 +264,7 @@ function drawBackground(){
     ctx.fillRect(0,0,1080,1080);
 }
 
-/* PLAYER IMAGE */
+/* PLAYER */
 function drawPlayer(){
     if(!playerImg) return;
     ctx.drawImage(playerImg,140,145,800,680);
@@ -152,7 +294,6 @@ function drawText(){
     const club = clubNameInput.value || "Club Name";
     const sponsor = sponsorInput.value || "Sponsored by...";
 
-    // TOP BAR
     ctx.fillStyle = "rgba(0,0,0,0.55)";
     ctx.fillRect(0,0,1080,110);
 
@@ -161,11 +302,9 @@ function drawText(){
     ctx.textAlign = "center";
     ctx.fillText(club,540,60);
 
-    // BOTTOM PANEL
     ctx.fillStyle = "rgba(0,0,0,0.75)";
     ctx.fillRect(0,860,1080,220);
 
-    ctx.fillStyle = "white";
     ctx.font = "800 72px Inter";
     ctx.fillText(player,540,930);
 
@@ -173,7 +312,7 @@ function drawText(){
     ctx.fillText(sponsor,540,1000);
 }
 
-/* MAIN DRAW */
+/* DRAW ALL */
 function generateImage(){
     ctx.clearRect(0,0,1080,1080);
     drawBackground();
@@ -183,8 +322,8 @@ function generateImage(){
 }
 
 /* LIVE TEXT UPDATE */
-[playerNameInput, clubNameInput, sponsorInput].forEach(input=>{
-    input.addEventListener("input", generateImage);
+[playerNameInput, clubNameInput, sponsorInput].forEach(i=>{
+    i.addEventListener("input", generateImage);
 });
 
 /* BUTTONS */
@@ -204,7 +343,7 @@ document.getElementById("downloadBtn").addEventListener("click", ()=>{
     link.click();
 });
 
-/* INITIAL DRAW */
+/* FIRST RENDER */
 generateImage();
 </script>
 
