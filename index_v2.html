@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Image Creator Pro - Centre Locked</title>
+<title>Image Creator Pro - Snap System</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
@@ -38,14 +38,13 @@ label{
     color:#cbd5e1;
 }
 
-input, select{
+input{
     width:100%;
     padding:10px;
     border-radius:10px;
     border:1px solid #334155;
     background:#0f172a;
     color:white;
-    margin-top:5px;
 }
 
 button{
@@ -77,10 +76,9 @@ canvas{
 
 <div class="container">
 
-<!-- CONTROLS -->
 <div class="panel">
 
-<h2>Image Creator Pro</h2>
+<h2>Snap Creator Pro</h2>
 
 <label>Player Image</label>
 <input type="file" id="player">
@@ -107,116 +105,163 @@ canvas{
 
 </div>
 
-<!-- CANVAS -->
-<div>
 <canvas id="c" width="1080" height="1080"></canvas>
-</div>
 
 </div>
 
 <script>
 
-const c = document.getElementById("c");
-const ctx = c.getContext("2d");
+const c=document.getElementById("c");
+const ctx=c.getContext("2d");
 
-let img = null;
-let badge = null;
+let img=null;
+let badge=null;
 
 /*
-    CENTRE LOCKED POSITION
+    POSITION
 */
-let cx = 540;
-let cy = 450;
+let cx=540;
+let cy=450;
 
-let zoom = 1;
-let rot = 0;
-let dragging = false;
+/*
+    SETTINGS
+*/
+let zoom=1;
+let rot=0;
 
+/*
+    SNAP SETTINGS
+*/
+const gridSize = 40;       // grid spacing
+const snapDistance = 25;   // how close before snapping
+const centreSnap = 20;     // snap strength to centre
+
+let dragging=false;
+
+/*
+    SNAP FUNCTION
+*/
+function snap(value, grid){
+    return Math.round(value / grid) * grid;
+}
+
+function applySnap(x,y){
+
+    // SNAP TO CENTRE (strong priority)
+    if(Math.abs(x - 540) < centreSnap) x = 540;
+    if(Math.abs(y - 450) < centreSnap) y = 450;
+
+    // GRID SNAP (secondary)
+    x = snap(x, gridSize);
+    y = snap(y, gridSize);
+
+    return {x,y};
+}
+
+/*
+    DRAW GRID (visual guide)
+*/
+function drawGrid(){
+
+ctx.strokeStyle="rgba(255,255,255,0.05)";
+ctx.lineWidth=1;
+
+for(let i=0;i<1080;i+=gridSize){
+
+    ctx.beginPath();
+    ctx.moveTo(i,0);
+    ctx.lineTo(i,1080);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0,i);
+    ctx.lineTo(1080,i);
+    ctx.stroke();
+}
+
+/* centre crosshair */
+ctx.strokeStyle="rgba(255,255,255,0.15)";
+ctx.beginPath();
+ctx.moveTo(540,0);
+ctx.lineTo(540,1080);
+ctx.stroke();
+
+ctx.beginPath();
+ctx.moveTo(0,450);
+ctx.lineTo(1080,450);
+ctx.stroke();
+
+}
+
+/*
+    MAIN DRAW
+*/
 function draw(){
 
-const g = ctx.createLinearGradient(0,0,1080,1080);
+const g=ctx.createLinearGradient(0,0,1080,1080);
 g.addColorStop(0,"#0f172a");
 g.addColorStop(1,"#2563eb");
 
-ctx.fillStyle = g;
+ctx.fillStyle=g;
 ctx.fillRect(0,0,1080,1080);
 
-/*
-    TOP BAR
-*/
+/* GRID */
+drawGrid();
+
+/* TOP BAR */
 ctx.fillStyle="rgba(0,0,0,0.5)";
 ctx.fillRect(0,0,1080,110);
 
 ctx.fillStyle="#fff";
 ctx.font="800 54px Inter";
 ctx.textAlign="center";
+
 ctx.fillText(
-    document.getElementById("clubName").value || "CLUB NAME",
-    540,
-    60
+document.getElementById("clubName").value || "CLUB",
+540,60
 );
 
-/*
-    PLAYER IMAGE (CENTRE LOCKED)
-*/
+/* PLAYER IMAGE (CENTRE LOCKED + SNAP) */
 if(img){
 
-    const w = 650 * zoom;
-    const h = 550 * zoom;
+const w=650*zoom;
+const h=550*zoom;
 
-    ctx.save();
+ctx.save();
+ctx.translate(cx,cy);
+ctx.rotate(rot*Math.PI/180);
 
-    ctx.translate(cx, cy);
-    ctx.rotate(rot * Math.PI / 180);
+ctx.drawImage(img,-w/2,-h/2,w,h);
 
-    ctx.drawImage(
-        img,
-        -w / 2,
-        -h / 2,
-        w,
-        h
-    );
-
-    ctx.restore();
+ctx.restore();
 }
 
-/*
-    LOWER PANEL
-*/
+/* BOTTOM */
 ctx.fillStyle="rgba(0,0,0,0.75)";
 ctx.fillRect(0,850,1080,230);
 
-/*
-    TEXT
-*/
 ctx.fillStyle="#fff";
-ctx.textAlign="center";
-
 ctx.font="800 72px Inter";
 ctx.fillText(
-    document.getElementById("playerName").value || "PLAYER NAME",
-    540,
-    930
+document.getElementById("playerName").value || "PLAYER",
+540,930
 );
 
 ctx.font="600 30px Inter";
 ctx.fillText(
-    document.getElementById("sponsor").value || "SPONSOR",
-    540,
-    1000
+document.getElementById("sponsor").value || "SPONSOR",
+540,1000
 );
 
-/*
-    BADGE (LOWER LEFT CENTRED)
-*/
+/* BADGE */
 if(badge){
-    ctx.drawImage(badge,40,880,120,120);
+ctx.drawImage(badge,40,880,120,120);
 }
 
 }
 
 /*
-    LOAD IMAGE
+    LOAD
 */
 function load(file,cb){
 const r=new FileReader();
@@ -248,27 +293,39 @@ draw();
 });
 
 /*
-    DRAGGING (CENTRE LOCKED)
+    DRAG + SNAP
 */
-c.onmousedown=()=>{
-dragging=true;
-};
+c.onmousedown=()=>dragging=true;
 
-c.onmouseup=()=>{
-dragging=false;
-};
+c.onmouseup=()=>dragging=false;
 
 c.onmousemove=e=>{
 if(!dragging) return;
-cx = e.offsetX;
-cy = e.offsetY;
+
+/* raw position */
+let x=e.offsetX;
+let y=e.offsetY;
+
+/* apply snapping */
+const snapped = applySnap(x,y);
+
+cx = snapped.x;
+cy = snapped.y;
+
 draw();
 };
 
 c.ontouchmove=e=>{
 const t=e.touches[0];
-cx = t.clientX;
-cy = t.clientY;
+
+let x=t.clientX;
+let y=t.clientY;
+
+const snapped = applySnap(x,y);
+
+cx=snapped.x;
+cy=snapped.y;
+
 draw();
 };
 
