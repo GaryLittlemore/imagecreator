@@ -198,9 +198,10 @@ const sponsorInput = document.getElementById("playerSponsor");
 let playerImg = null;
 let badgeImg = null;
 
-/* IMAGE LOAD */
+/* LOAD IMAGE */
 function loadImage(file, cb){
     if(!file) return;
+
     const reader = new FileReader();
     reader.onload = e=>{
         const img = new Image();
@@ -210,6 +211,7 @@ function loadImage(file, cb){
     reader.readAsDataURL(file);
 }
 
+/* INPUTS */
 playerInput.addEventListener("change", e=>{
     loadImage(e.target.files[0], img=>{
         playerImg = img;
@@ -256,7 +258,7 @@ function drawBadge(){
     ctx.restore();
 }
 
-/* TEXT */
+/* TEXT (FIXED) */
 function drawText(){
 
     const player = playerNameInput.value || "Player Name";
@@ -272,21 +274,27 @@ function drawText(){
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    /* FIXED CENTRING */
     ctx.fillText(club,540,55);
 
     /* BOTTOM PANEL */
     ctx.fillStyle = "rgba(0,0,0,0.75)";
     ctx.fillRect(0,860,1080,220);
 
-    ctx.font = "800 72px Inter";
-    ctx.fillText(player,540,930);
+    /* RESET STYLES (IMPORTANT FIX) */
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
 
+    /* PLAYER NAME */
+    ctx.font = "800 72px Inter";
+    ctx.fillText(player,540,920);
+
+    /* SPONSOR */
     ctx.font = "600 30px Inter";
-    ctx.fillText(sponsor,540,1000);
+    ctx.fillText(sponsor,540,990);
 }
 
-/* MAIN DRAW */
+/* DRAW */
 function draw(){
     ctx.clearRect(0,0,1080,1080);
     drawBackground();
