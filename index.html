@@ -294,20 +294,10 @@ function drawPlayerImage(){
 
     if(!playerImg) return;
 
-    /*
-        THIS FIXES THE "IMAGE INSIDE IMAGE" ISSUE
-
-        The previous version scaled the whole image into
-        a small area which caused repeated-looking visuals.
-
-        This version properly crops and fits the image
-        like a professional poster creator.
-    */
-
     const targetX = 140;
-    const targetY = 120;
+    const targetY = 130;
     const targetWidth = 800;
-    const targetHeight = 760;
+    const targetHeight = 730;
 
     const imgRatio = playerImg.width / playerImg.height;
     const targetRatio = targetWidth / targetHeight;
@@ -316,7 +306,6 @@ function drawPlayerImage(){
 
     if(imgRatio > targetRatio){
 
-        // Crop left/right
         sHeight = playerImg.height;
         sWidth = sHeight * targetRatio;
 
@@ -325,7 +314,6 @@ function drawPlayerImage(){
 
     } else {
 
-        // Crop top/bottom
         sWidth = playerImg.width;
         sHeight = sWidth / targetRatio;
 
@@ -380,36 +368,53 @@ function drawText(){
     const sponsor =
         sponsorInput.value || 'Sponsored by...';
 
-    // Bottom panel
-    ctx.fillStyle = 'rgba(0,0,0,0.75)';
-    ctx.fillRect(0,790,1080,290);
+    /*
+        TOP CLUB NAME
+    */
 
-    // Club name
-    ctx.fillStyle = '#93c5fd';
-    ctx.font = 'bold 42px Inter';
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fillRect(0,0,1080,110);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '800 54px Inter';
     ctx.textAlign = 'center';
+
     ctx.fillText(
         clubName.toUpperCase(),
         540,
-        860
+        70
     );
 
-    // Player name
+    /*
+        BOTTOM PANEL
+    */
+
+    ctx.fillStyle = 'rgba(0,0,0,0.75)';
+    ctx.fillRect(0,790,1080,290);
+
+    /*
+        PLAYER NAME
+    */
+
     ctx.fillStyle = '#ffffff';
     ctx.font = '800 82px Inter';
+
     ctx.fillText(
         playerName.toUpperCase(),
         540,
-        940
+        920
     );
 
-    // Sponsor box
+    /*
+        SPONSOR BOX
+    */
+
     ctx.fillStyle = '#ffffff';
 
     roundRect(
         ctx,
         250,
-        980,
+        970,
         580,
         60,
         14
@@ -423,7 +428,7 @@ function drawText(){
     ctx.fillText(
         sponsor,
         540,
-        1018
+        1008
     );
 }
 
