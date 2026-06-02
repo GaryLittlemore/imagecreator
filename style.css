@@ -1,0 +1,152 @@
+/* RESET */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+/* BODY */
+body{
+    font-family:'Inter',sans-serif;
+    background:#0f172a;
+    color:white;
+    padding:30px;
+}
+
+/* CONTAINER */
+.container{
+    max-width:1400px;
+    margin:auto;
+}
+
+/* HEADER */
+h1{
+    font-size:42px;
+    font-weight:800;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#cbd5e1;
+    margin-bottom:30px;
+}
+
+/* LAYOUT */
+.layout{
+    display:grid;
+    grid-template-columns:380px 1fr;
+    gap:30px;
+    align-items:start;
+}
+
+/* LEFT PANEL */
+.controls{
+    background:#111827;
+    border-radius:20px;
+    padding:25px;
+    border:1px solid #1e293b;
+}
+
+/* FORM */
+.control-group{
+    margin-bottom:22px;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+input[type="text"]{
+    width:100%;
+    padding:14px;
+    border-radius:12px;
+    border:1px solid #334155;
+    background:#0f172a;
+    color:white;
+    font-size:15px;
+}
+
+input[type="file"]{
+    width:100%;
+    padding:12px;
+    border-radius:12px;
+    border:1px dashed #475569;
+    background:#0f172a;
+    color:#cbd5e1;
+}
+
+/* BUTTONS */
+button{
+    width:100%;
+    padding:14px;
+    margin-top:10px;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+    font-weight:700;
+    font-size:15px;
+    transition:0.2s;
+}
+
+.generate-btn{
+    background:#2563eb;
+    color:white;
+}
+
+.generate-btn:hover{
+    background:#1d4ed8;
+}
+
+.download-btn{
+    background:#10b981;
+    color:white;
+}
+
+.download-btn:hover{
+    background:#059669;
+}
+
+/* RIGHT PREVIEW AREA (FIXED ALIGNMENT) */
+.preview{
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+}
+
+/* MATCHES LEFT PANEL EXACTLY */
+.canvas-wrap{
+    background:#111827;
+    border-radius:20px;
+    border:1px solid #1e293b;
+    padding:25px;              /* KEY FIX: matches controls */
+    width:100%;
+    max-width:740px;
+    display:flex;
+    justify-content:center;
+}
+
+/* CANVAS */
+canvas{
+    width:100%;
+    max-width:700px;
+    aspect-ratio:1/1;
+    background:black;
+    border-radius:18px;
+    display:block;
+}
+
+/* NOTE */
+.note{
+    margin-top:18px;
+    color:#94a3b8;
+    font-size:13px;
+}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+    .layout{
+        grid-template-columns:1fr;
+    }
+}
