@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Sports Card Generator</title>
+    <title>Modern Sports Card Generator</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --panel-bg: #1e293b;
+            --bg-color: #0b0f19;
+            --panel-bg: #151f32;
             --accent-color: #38bdf8;
             --text-color: #f8fafc;
         }
@@ -16,7 +16,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
@@ -31,11 +31,12 @@
         }
 
         h1 {
-            margin-bottom: 20px;
-            font-size: 2rem;
+            margin-bottom: 24px;
+            font-size: 1.8rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             text-align: center;
+            font-weight: 800;
         }
 
         h1 span {
@@ -48,9 +49,9 @@
             gap: 40px;
             background: var(--panel-bg);
             padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            max-width: 1000px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            max-width: 950px;
             width: 100%;
         }
 
@@ -58,57 +59,58 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 18px;
         }
 
         .control-group {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 6px;
         }
 
         label {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             color: #94a3b8;
+            font-weight: 600;
         }
 
-        input[type="text"], input[type="file"], select {
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #475569;
-            background: #0f172a;
+        input[type="text"], input[type="file"] {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0b0f19;
             color: #fff;
-            font-size: 1rem;
+            font-size: 0.95rem;
             outline: none;
-            transition: border 0.2s;
+            transition: border-color 0.2s;
         }
 
-        input[type="text"]:focus, select:focus {
+        input[type="text"]:focus {
             border-color: var(--accent-color);
         }
 
         .color-pickers {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
         }
 
         .color-picker-wrapper {
             display: flex;
             align-items: center;
             gap: 10px;
-            background: #0f172a;
-            padding: 5px 10px;
-            border-radius: 6px;
-            border: 1px solid #475569;
+            background: #0b0f19;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
         }
 
         input[type="color"] {
             border: none;
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             cursor: pointer;
             background: transparent;
         }
@@ -119,30 +121,29 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 20px;
         }
 
         canvas {
             background: #000;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            border-radius: 16px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.5);
             max-width: 100%;
             height: auto;
         }
 
         .btn {
             background: var(--accent-color);
-            color: #000;
-            padding: 12px 20px;
+            color: #0b0f19;
+            padding: 14px 20px;
             border: none;
-            border-radius: 6px;
-            font-weight: bold;
+            border-radius: 8px;
+            font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
             text-transform: uppercase;
+            letter-spacing: 1px;
             transition: background 0.2s, transform 0.1s;
-            width: 100%;
-            text-align: center;
+            margin-top: 10px;
         }
 
         .btn:hover {
@@ -150,11 +151,6 @@
             transform: translateY(-1px);
         }
 
-        .btn:active {
-            transform: translateY(1px);
-        }
-
-        /* Responsive Hack */
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -164,41 +160,41 @@
 </head>
 <body>
 
-    <h1>Card <span>Generator</span></h1>
+    <h1>Card <span>Studio</span></h1>
 
     <div class="container">
         <div class="controls">
             <div class="control-group">
                 <label for="playerName">Player Name</label>
-                <input type="text" id="playerName" value="DIOGO JOTA" placeholder="Enter player name">
+                <input type="text" id="playerName" value="ERLING HAALAND" placeholder="Player Name">
             </div>
 
             <div class="control-group">
                 <label for="clubName">Club Name</label>
-                <input type="text" id="clubName" value="LIVERPOOL FC" placeholder="Enter club name">
+                <input type="text" id="clubName" value="MANCHESTER CITY" placeholder="Club Name">
             </div>
 
             <div class="control-group">
                 <label for="sponsorName">Sponsor</label>
-                <input type="text" id="sponsorName" value="Standard Chartered" placeholder="Enter sponsor name">
+                <input type="text" id="sponsorName" value="Etihad Airways" placeholder="Sponsor">
             </div>
 
             <div class="control-group">
-                <label>Theme Gradient Colors</label>
+                <label>Theme Palette</label>
                 <div class="color-pickers">
                     <div class="color-picker-wrapper">
-                        <input type="color" id="color1" value="#dc2626">
+                        <input type="color" id="color1" value="#0052cc">
                         <label for="color1">Primary</label>
                     </div>
                     <div class="color-picker-wrapper">
-                        <input type="color" id="color2" value="#111827">
+                        <input type="color" id="color2" value="#65a30d">
                         <label for="color2">Secondary</label>
                     </div>
                 </div>
             </div>
 
             <div class="control-group">
-                <label for="playerImg">Player Portrait Photo</label>
+                <label for="playerImg">Player Portrait (Full Photo)</label>
                 <input type="file" id="playerImg" accept="image/*">
             </div>
 
@@ -207,11 +203,11 @@
                 <input type="file" id="badgeImg" accept="image/*">
             </div>
 
-            <button class="btn" id="downloadBtn">Download Card</button>
+            <button class="btn" id="downloadBtn">Download Graphics</button>
         </div>
 
         <div class="preview-area">
-            <canvas id="cardCanvas" width="400" height="560"></canvas>
+            <canvas id="cardCanvas" width="420" height="580"></canvas>
         </div>
     </div>
 
@@ -219,7 +215,7 @@
         const canvas = document.getElementById('cardCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Inputs
+        // Inputs DOM Reference
         const playerNameInput = document.getElementById('playerName');
         const clubNameInput = document.getElementById('clubName');
         const sponsorNameInput = document.getElementById('sponsorName');
@@ -229,161 +225,151 @@
         const badgeImgInput = document.getElementById('badgeImg');
         const downloadBtn = document.getElementById('downloadBtn');
 
-        // State for loaded images
         let loadedPlayerImg = null;
         let loadedBadgeImg = null;
 
-        // Auto-sizing Text Helper function
+        // Auto-sizing Text logic
         function drawAutosizedText(ctx, text, x, y, maxWidth, baseSize, fontFace, weight = 'bold') {
             let fontSize = baseSize;
             ctx.font = `${weight} ${fontSize}px ${fontFace}`;
-            
-            // Loop to reduce text until it fits safely within maxWidth boundaries
-            while (ctx.measureText(text).width > maxWidth && fontSize > 12) {
+            while (ctx.measureText(text).width > maxWidth && fontSize > 11) {
                 fontSize--;
                 ctx.font = `${weight} ${fontSize}px ${fontFace}`;
             }
-            
             ctx.fillText(text, x, y);
-            return fontSize; // returns used size just in case
+            return fontSize;
         }
 
         function drawCard() {
-            // 1. Clear Canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 2. Background Gradient 
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, color1Input.value);
-            gradient.addColorStop(0.7, color2Input.value);
-            gradient.addColorStop(1, '#000000');
-            ctx.fillStyle = gradient;
+            // 1. Core Background Gradient
+            const bgGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            bgGradient.addColorStop(0, color1Input.value);
+            bgGradient.addColorStop(1, color2Input.value);
+            ctx.fillStyle = bgGradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // 3. Subtle background geometric accents
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+            // Subtle abstract pattern for sports styling overlay
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
             ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.lineTo(canvas.width * 0.7, 0);
-            ctx.lineTo(canvas.width * 0.3, canvas.height);
-            ctx.lineTo(0, canvas.height);
+            ctx.moveTo(canvas.width, 0);
+            ctx.lineTo(canvas.width * 0.2, canvas.height);
+            ctx.lineTo(canvas.width, canvas.height);
             ctx.closePath();
             ctx.fill();
 
-            // 4. Draw Player Image
+            // 2. Full Portrait Player Image Render
             if (loadedPlayerImg) {
-                // Calculate aspect ratio fit (Centered and anchored toward bottom)
-                const wrh = loadedPlayerImg.width / loadedPlayerImg.height;
-                let newWidth = canvas.width * 0.95;
-                let newHeight = newWidth / wrh;
+                const imgRatio = loadedPlayerImg.width / loadedPlayerImg.height;
+                const canvasRatio = canvas.width / canvas.height;
                 
-                if (newHeight < canvas.height * 0.65) {
-                    newHeight = canvas.height * 0.65;
-                    newWidth = newHeight * wrh;
+                let renderWidth, renderHeight, xOffset, yOffset;
+
+                // Cover implementation to ensure image uses full real estate seamlessly
+                if (imgRatio > canvasRatio) {
+                    renderHeight = canvas.height;
+                    renderWidth = canvas.height * imgRatio;
+                    xOffset = (canvas.width - renderWidth) / 2;
+                    yOffset = 0;
+                } else {
+                    renderWidth = canvas.width;
+                    renderHeight = canvas.width / imgRatio;
+                    xOffset = 0;
+                    yOffset = (canvas.height - renderHeight) / 2;
                 }
 
-                const x = (canvas.width - newWidth) / 2;
-                const y = (canvas.height * 0.72) - newHeight; // align bottom right above dynamic UI text
-
-                ctx.save();
-                // Create a fade effect on the bottom of the player's photo
-                ctx.drawImage(loadedPlayerImg, x, y, newWidth, newHeight);
-                ctx.restore();
+                ctx.drawImage(loadedPlayerImg, xOffset, yOffset, renderWidth, renderHeight);
             } else {
-                // Placeholder if no photo uploaded
-                ctx.fillStyle = 'rgba(255,255,255,0.1)';
+                ctx.fillStyle = 'rgba(255,255,255,0.15)';
                 ctx.textAlign = 'center';
-                ctx.font = 'italic 16px sans-serif';
-                ctx.fillText('[Upload Player Photo]', canvas.width / 2, canvas.height * 0.4);
+                ctx.font = '600 15px sans-serif';
+                ctx.fillText('[UPLOAD FULL PLAYER PORTRAIT]', canvas.width / 2, canvas.height / 2);
             }
 
-            // 5. Draw Sleek Modern Info Bar Graphic at bottom
-            const uiStartY = canvas.height * 0.72;
-            
-            // Bottom translucent dark card panel
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
-            ctx.strokeStyle = color1Input.value;
-            ctx.lineWidth = 3;
-            
-            ctx.beginPath();
-            ctx.moveTo(20, uiStartY);
-            ctx.lineTo(canvas.width - 20, uiStartY);
-            ctx.lineTo(canvas.width - 35, canvas.height - 20);
-            ctx.lineTo(35, canvas.height - 20);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
+            // 3. Clean Lower Third Text Shadow Backdrop (No solid borders)
+            const gradientHeight = 180;
+            const textFade = ctx.createLinearGradient(0, canvas.height - gradientHeight, 0, canvas.height);
+            textFade.addColorStop(0, 'rgba(0, 0, 0, 0.0)');
+            textFade.addColorStop(0.3, 'rgba(0, 0, 0, 0.65)');
+            textFade.addColorStop(1, 'rgba(0, 0, 0, 0.95)');
+            ctx.fillStyle = textFade;
+            ctx.fillRect(0, canvas.height - gradientHeight, canvas.width, gradientHeight);
 
-            // 6. Draw Team Badge (Top Right Corner or Left UI bar depending on style)
+            // 4. Render Badge Graphic
+            const textLeftPadding = 35;
+            const badgeSize = 44;
+            const badgeY = canvas.height - 75;
+            let finalTextWidth = canvas.width - (textLeftPadding * 2);
+
             if (loadedBadgeImg) {
-                ctx.drawImage(loadedBadgeImg, canvas.width - 70, uiStartY + 15, 40, 40);
+                const badgeX = canvas.width - textLeftPadding - badgeSize;
+                ctx.drawImage(loadedBadgeImg, badgeX, badgeY, badgeSize, badgeSize);
+                finalTextWidth = badgeX - textLeftPadding - 15; // constrain text space slightly if badge exists
             }
 
-            // 7. Render Typography with automatic scaling
-            ctx.fillStyle = '#ffffff';
+            // 5. Typography Layout
             ctx.textAlign = 'left';
+            
+            // Player Name Text
+            ctx.fillStyle = '#ffffff';
+            const nameY = canvas.height - 82;
+            drawAutosizedText(ctx, playerNameInput.value.toUpperCase(), textLeftPadding, nameY, finalTextWidth, 32, 'Impact, sans-serif');
 
-            // Player Name
-            const nameX = 45;
-            const maxTextWidth = loadedBadgeImg ? canvas.width - 130 : canvas.width - 90;
-            drawAutosizedText(ctx, playerNameInput.value.toUpperCase(), nameX, uiStartY + 35, maxTextWidth, 26, 'Impact, sans-serif');
+            // Team Label Text
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.75)'; 
+            const teamY = canvas.height - 62;
+            drawAutosizedText(ctx, clubNameInput.value.toUpperCase(), textLeftPadding, teamY, finalTextWidth, 13, 'Arial', '600');
 
-            // Club Name
-            ctx.fillStyle = '#cbd5e1'; // muted gray-white
-            drawAutosizedText(ctx, clubNameInput.value.toUpperCase(), nameX, uiStartY + 55, maxTextWidth, 14, 'Arial, sans-serif', 'normal');
-
-            // Sponsor text
-            ctx.fillStyle = color1Input.value; // Give sponsor your brand color pop
-            ctx.font = 'bold 11px Arial';
-            ctx.fillText("SPONSORED BY:", nameX, uiStartY + 80);
+            // Clean Sponsor Presentation Line
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.font = 'bold 9px Arial';
+            ctx.fillText('SPONSOR', textLeftPadding, canvas.height - 38);
 
             ctx.fillStyle = '#ffffff';
-            drawAutosizedText(ctx, sponsorNameInput.value, nameX, uiStartY + 96, maxTextWidth, 15, 'Arial', 'bold');
+            const sponsorY = canvas.height - 22;
+            drawAutosizedText(ctx, sponsorNameInput.value, textLeftPadding, sponsorY, finalTextWidth, 14, 'Arial', 'bold');
         }
 
-        // Event listener functions to process image file uploads
-        function handleImageUpload(e, callback) {
+        // Image stream pipeline configurations
+        function processImage(e, targetAssignee) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
             const reader = new FileReader();
-            reader.onload = function(event){
+            reader.onload = function(event) {
                 const img = new Image();
-                img.onload = function(){
-                    callback(img);
+                img.onload = function() {
+                    if (targetAssignee === 'player') loadedPlayerImg = img;
+                    if (targetAssignee === 'badge') loadedBadgeImg = img;
                     drawCard();
                 }
                 img.src = event.target.result;
             }
-            if(e.target.files[0]) {
-                reader.readAsDataURL(e.target.files[0]);
-            }
+            reader.readAsDataURL(file);
         }
 
-        // Event Listeners for inputs
+        // Live DOM UI Node Action Listeners
         playerNameInput.addEventListener('input', drawCard);
         clubNameInput.addEventListener('input', drawCard);
         sponsorNameInput.addEventListener('input', drawCard);
         color1Input.addEventListener('input', drawCard);
         color2Input.addEventListener('input', drawCard);
 
-        playerImgInput.addEventListener('change', (e) => {
-            handleImageUpload(e, (img) => { loadedPlayerImg = img; });
-        });
+        playerImgInput.addEventListener('change', (e) => processImage(e, 'player'));
+        badgeImgInput.addEventListener('change', (e) => processImage(e, 'badge'));
 
-        badgeImgInput.addEventListener('change', (e) => {
-            handleImageUpload(e, (img) => { loadedBadgeImg = img; });
-        });
-
-        // Trigger download action
+        // Output File System triggers
         downloadBtn.addEventListener('click', () => {
             const link = document.createElement('a');
-            link.download = `${playerNameInput.value.replace(/\s+/g, '_')}_card.png`;
-            link.href = canvas.toDataURL();
+            const sanitizedName = playerNameInput.value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_');
+            link.download = `${sanitizedName || 'player'}_card.png`;
+            link.href = canvas.toDataURL('image/png');
             link.click();
         });
 
-        // Initial draw on bootup
-        window.onload = () => {
-            drawCard();
-        };
+        // Initialize empty base template build
+        window.onload = drawCard;
     </script>
 </body>
 </html>
