@@ -369,20 +369,26 @@ function drawText(){
         sponsorInput.value || 'Sponsored by...';
 
     /*
-        TOP CLUB NAME
+        TOP CLUB NAME BAR
     */
 
     ctx.fillStyle = 'rgba(0,0,0,0.55)';
     ctx.fillRect(0,0,1080,110);
 
+    /*
+        CLUB NAME
+        CENTRED TOP TO BOTTOM
+    */
+
     ctx.fillStyle = '#ffffff';
     ctx.font = '800 54px Inter';
     ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
 
     ctx.fillText(
         clubName.toUpperCase(),
         540,
-        70
+        55
     );
 
     /*
@@ -394,6 +400,7 @@ function drawText(){
 
     /*
         PLAYER NAME
+        MOVED LOWER
     */
 
     ctx.fillStyle = '#ffffff';
@@ -402,7 +409,7 @@ function drawText(){
     ctx.fillText(
         playerName.toUpperCase(),
         540,
-        925
+        950
     );
 
     /*
@@ -414,7 +421,7 @@ function drawText(){
     roundRect(
         ctx,
         250,
-        950,
+        975,
         580,
         60,
         14
@@ -428,7 +435,7 @@ function drawText(){
     ctx.fillText(
         sponsor,
         540,
-        988
+        1005
     );
 }
 
