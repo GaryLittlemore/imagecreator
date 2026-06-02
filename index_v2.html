@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Image Creator Pro - Basic</title>
+<title>Image Creator Pro - Fixed</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
@@ -77,7 +77,6 @@ canvas{
 
 <div class="container">
 
-<!-- CONTROLS -->
 <div class="panel">
 
 <h2>Image Creator Pro</h2>
@@ -89,13 +88,13 @@ canvas{
 <input type="file" id="badge">
 
 <label>Player Name</label>
-<input id="playerName">
+<input type="text" id="playerName">
 
 <label>Club Name</label>
-<input id="clubName">
+<input type="text" id="clubName">
 
 <label>Sponsor</label>
-<input id="sponsor">
+<input type="text" id="sponsor">
 
 <label>Zoom</label>
 <input type="range" id="zoom" min="0.5" max="2" step="0.01" value="1">
@@ -104,7 +103,6 @@ canvas{
 
 </div>
 
-<!-- CANVAS -->
 <canvas id="c" width="1080" height="1080"></canvas>
 
 </div>
@@ -117,17 +115,13 @@ const ctx = c.getContext("2d");
 let img = null;
 let badge = null;
 
-/*
-    SIMPLE POSITIONING
-*/
 let x = 240;
 let y = 200;
-
 let zoom = 1;
 let dragging = false;
 
 /*
-    DRAW
+    MAIN DRAW FUNCTION
 */
 function draw(){
 
@@ -199,8 +193,20 @@ r.readAsDataURL(file);
 }
 
 /*
-    INPUTS
+    INPUT EVENTS (FIXED: LIVE TEXT UPDATE)
 */
+document.querySelectorAll("input[type='text']").forEach(input=>{
+    input.addEventListener("input", draw);
+});
+
+/*
+    OTHER INPUTS
+*/
+document.getElementById("zoom").oninput=e=>{
+zoom = e.target.value;
+draw();
+};
+
 document.getElementById("player").onchange=e=>{
 load(e.target.files[0],i=>{img=i;draw();});
 };
@@ -209,13 +215,8 @@ document.getElementById("badge").onchange=e=>{
 load(e.target.files[0],i=>{badge=i;draw();});
 };
 
-document.getElementById("zoom").oninput=e=>{
-zoom = e.target.value;
-draw();
-};
-
 /*
-    SIMPLE DRAG (NO SNAP, NO ROTATION)
+    DRAG IMAGE
 */
 c.onmousedown=e=>{
 dragging=true;
