@@ -338,22 +338,52 @@ function drawBadge(){
 
     if(!badgeImg) return;
 
+    /*
+        BADGE MOVED TO LOWER PANEL
+        LEFT INDENT + CENTERED
+    */
+
+    const badgeSize = 110;
+    const badgeX = 40;
+    const badgeY = 885;
+
     ctx.save();
 
     ctx.beginPath();
-    ctx.arc(150,150,70,0,Math.PI*2);
+    ctx.arc(
+        badgeX + (badgeSize / 2),
+        badgeY + (badgeSize / 2),
+        badgeSize / 2,
+        0,
+        Math.PI * 2
+    );
+
     ctx.closePath();
     ctx.clip();
 
-    ctx.drawImage(badgeImg,80,80,140,140);
+    ctx.drawImage(
+        badgeImg,
+        badgeX,
+        badgeY,
+        badgeSize,
+        badgeSize
+    );
 
     ctx.restore();
 
     ctx.strokeStyle = 'white';
-    ctx.lineWidth = 6;
+    ctx.lineWidth = 5;
 
     ctx.beginPath();
-    ctx.arc(150,150,70,0,Math.PI*2);
+
+    ctx.arc(
+        badgeX + (badgeSize / 2),
+        badgeY + (badgeSize / 2),
+        badgeSize / 2,
+        0,
+        Math.PI * 2
+    );
+
     ctx.stroke();
 }
 
@@ -391,7 +421,7 @@ function drawText(){
     );
 
     /*
-        BOTTOM GRAPHIC
+        LOWER PANEL
     */
 
     ctx.fillStyle = 'rgba(0,0,0,0.75)';
@@ -399,28 +429,28 @@ function drawText(){
 
     /*
         PLAYER NAME
-        MOVED UP TO AVOID OVERLAP
     */
 
     ctx.fillStyle = '#ffffff';
     ctx.font = '800 72px Inter';
+    ctx.textAlign = 'center';
 
     ctx.fillText(
         playerName,
-        540,
+        590,
         930
     );
 
     /*
-        SPONSOR TEXT
+        SPONSOR
     */
 
     ctx.font = '600 30px Inter';
 
     ctx.fillText(
         sponsor,
-        540,
-        1008
+        590,
+        1000
     );
 }
 
@@ -430,8 +460,8 @@ function generateImage(){
 
     drawBackground();
     drawPlayerImage();
-    drawBadge();
     drawText();
+    drawBadge();
 }
 
 document.getElementById('generateBtn').addEventListener('click', generateImage);
