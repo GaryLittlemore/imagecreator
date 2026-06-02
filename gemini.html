@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Sports Card Generator</title>
+    <title>Dynamic Sports Card Generator</title>
     <style>
         :root {
             --bg-color: #0b0f19;
@@ -166,12 +166,12 @@
         <div class="controls">
             <div class="control-group">
                 <label for="playerName">Player Name</label>
-                <input type="text" id="playerName" value="ERLING HAALAND" placeholder="Player Name">
+                <input type="text" id="playerName" value="Erling Haaland" placeholder="e.g. Erling Haaland">
             </div>
 
             <div class="control-group">
                 <label for="clubName">Club Name</label>
-                <input type="text" id="clubName" value="MANCHESTER CITY" placeholder="Club Name">
+                <input type="text" id="clubName" value="Manchester City" placeholder="e.g. Manchester City">
             </div>
 
             <div class="control-group">
@@ -266,7 +266,6 @@
                 
                 let renderWidth, renderHeight, xOffset, yOffset;
 
-                // Cover implementation to ensure image uses full real estate seamlessly
                 if (imgRatio > canvasRatio) {
                     renderHeight = canvas.height;
                     renderWidth = canvas.height * imgRatio;
@@ -287,7 +286,7 @@
                 ctx.fillText('[UPLOAD FULL PLAYER PORTRAIT]', canvas.width / 2, canvas.height / 2);
             }
 
-            // 3. Clean Lower Third Text Shadow Backdrop (No solid borders)
+            // 3. Clean Lower Third Text Shadow Backdrop
             const gradientHeight = 180;
             const textFade = ctx.createLinearGradient(0, canvas.height - gradientHeight, 0, canvas.height);
             textFade.addColorStop(0, 'rgba(0, 0, 0, 0.0)');
@@ -305,21 +304,21 @@
             if (loadedBadgeImg) {
                 const badgeX = canvas.width - textLeftPadding - badgeSize;
                 ctx.drawImage(loadedBadgeImg, badgeX, badgeY, badgeSize, badgeSize);
-                finalTextWidth = badgeX - textLeftPadding - 15; // constrain text space slightly if badge exists
+                finalTextWidth = badgeX - textLeftPadding - 15;
             }
 
-            // 5. Typography Layout
+            // 5. Typography Layout (Matching exact case typed by user)
             ctx.textAlign = 'left';
             
-            // Player Name Text
+            // Player Name Text (Uses system default fonts seamlessly if Impact isn't preferred for mixed-case)
             ctx.fillStyle = '#ffffff';
             const nameY = canvas.height - 82;
-            drawAutosizedText(ctx, playerNameInput.value.toUpperCase(), textLeftPadding, nameY, finalTextWidth, 32, 'Impact, sans-serif');
+            drawAutosizedText(ctx, playerNameInput.value, textLeftPadding, nameY, finalTextWidth, 32, 'Arial, Helvetica, sans-serif', 'bold');
 
             // Team Label Text
             ctx.fillStyle = 'rgba(255, 255, 255, 0.75)'; 
             const teamY = canvas.height - 62;
-            drawAutosizedText(ctx, clubNameInput.value.toUpperCase(), textLeftPadding, teamY, finalTextWidth, 13, 'Arial', '600');
+            drawAutosizedText(ctx, clubNameInput.value, textLeftPadding, teamY, finalTextWidth, 14, 'Arial, sans-serif', '600');
 
             // Clean Sponsor Presentation Line
             ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
