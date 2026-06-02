@@ -82,7 +82,7 @@ input[type="file"]{
     color:#cbd5e1;
 }
 
-/* BUTTONS */
+/* DOWNLOAD BUTTON */
 button{
     width:100%;
     padding:14px;
@@ -92,11 +92,6 @@ button{
     cursor:pointer;
     font-weight:700;
     font-size:15px;
-}
-
-.generate-btn{
-    background:#2563eb;
-    color:white;
 }
 
 .download-btn{
@@ -127,6 +122,16 @@ canvas{
     aspect-ratio:1/1;
     background:black;
     border-radius:18px;
+    display:block;
+}
+
+/* MOBILE */
+@media(max-width:1000px){
+
+    .layout{
+        grid-template-columns:1fr;
+    }
+
 }
 </style>
 
@@ -136,52 +141,59 @@ canvas{
 
 <div class="container">
 
-<h1>Image Creator Pro</h1>
-<div class="subtitle">Create football graphics directly in your browser.</div>
+    <h1>Image Creator Pro</h1>
 
-<div class="layout">
-
-<!-- CONTROLS -->
-<div class="controls">
-
-    <div class="control-group">
-        <label>Player Image</label>
-        <input type="file" id="playerImage" accept="image/*">
+    <div class="subtitle">
+        Create football graphics directly in your browser.
     </div>
 
-    <div class="control-group">
-        <label>Club Badge</label>
-        <input type="file" id="clubBadge" accept="image/*">
+    <div class="layout">
+
+        <!-- CONTROLS -->
+        <div class="controls">
+
+            <div class="control-group">
+                <label>Player Image</label>
+                <input type="file" id="playerImage" accept="image/*">
+            </div>
+
+            <div class="control-group">
+                <label>Club Badge</label>
+                <input type="file" id="clubBadge" accept="image/*">
+            </div>
+
+            <div class="control-group">
+                <label>Player Name</label>
+                <input type="text" id="playerName" placeholder="Player Name">
+            </div>
+
+            <div class="control-group">
+                <label>Club Name</label>
+                <input type="text" id="clubName" placeholder="Club Name">
+            </div>
+
+            <div class="control-group">
+                <label>Player Sponsor</label>
+                <input type="text" id="playerSponsor" placeholder="Sponsored by...">
+            </div>
+
+            <button class="download-btn" id="downloadBtn">
+                Download PNG
+            </button>
+
+        </div>
+
+        <!-- CANVAS -->
+        <div class="preview">
+
+            <div class="canvas-wrap">
+                <canvas id="canvas" width="1080" height="1080"></canvas>
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="control-group">
-        <label>Player Name</label>
-        <input type="text" id="playerName" placeholder="Player Name">
-    </div>
-
-    <div class="control-group">
-        <label>Club Name</label>
-        <input type="text" id="clubName" placeholder="Club Name">
-    </div>
-
-    <div class="control-group">
-        <label>Player Sponsor</label>
-        <input type="text" id="playerSponsor" placeholder="Sponsored by...">
-    </div>
-
-    <button class="generate-btn" id="generateBtn">Generate Image</button>
-    <button class="download-btn" id="downloadBtn">Download PNG</button>
-
-</div>
-
-<!-- CANVAS -->
-<div class="preview">
-    <div class="canvas-wrap">
-        <canvas id="canvas" width="1080" height="1080"></canvas>
-    </div>
-</div>
-
-</div>
 </div>
 
 <script>
@@ -200,48 +212,75 @@ let badgeImg = null;
 
 /* LOAD IMAGE */
 function loadImage(file, cb){
+
     if(!file) return;
+
     const reader = new FileReader();
-    reader.onload = e=>{
+
+    reader.onload = e => {
+
         const img = new Image();
-        img.onload = ()=>cb(img);
+
+        img.onload = () => cb(img);
+
         img.src = e.target.result;
     };
+
     reader.readAsDataURL(file);
 }
 
-/* INPUTS */
-playerInput.addEventListener("change", e=>{
-    loadImage(e.target.files[0], img=>{
+/* IMAGE INPUTS */
+playerInput.addEventListener("change", e => {
+
+    loadImage(e.target.files[0], img => {
+
         playerImg = img;
         draw();
+
     });
+
 });
 
-badgeInput.addEventListener("change", e=>{
-    loadImage(e.target.files[0], img=>{
+badgeInput.addEventListener("change", e => {
+
+    loadImage(e.target.files[0], img => {
+
         badgeImg = img;
         draw();
+
     });
+
 });
 
 /* BACKGROUND */
 function drawBackground(){
-    const g = ctx.createLinearGradient(0,0,1080,1080);
-    g.addColorStop(0,"#0f172a");
-    g.addColorStop(1,"#2563eb");
-    ctx.fillStyle = g;
+
+    const gradient = ctx.createLinearGradient(0,0,1080,1080);
+
+    gradient.addColorStop(0,"#0f172a");
+    gradient.addColorStop(1,"#2563eb");
+
+    ctx.fillStyle = gradient;
     ctx.fillRect(0,0,1080,1080);
 }
 
-/* PLAYER */
+/* PLAYER IMAGE */
 function drawPlayer(){
+
     if(!playerImg) return;
-    ctx.drawImage(playerImg,140,145,800,680);
+
+    ctx.drawImage(
+        playerImg,
+        140,
+        145,
+        800,
+        680
+    );
 }
 
 /* BADGE */
 function drawBadge(){
+
     if(!badgeImg) return;
 
     const size = 120;
@@ -249,20 +288,41 @@ function drawBadge(){
     const y = 886;
 
     ctx.save();
+
     ctx.beginPath();
-    ctx.arc(x+60,y+60,60,0,Math.PI*2);
+
+    ctx.arc(
+        x + 60,
+        y + 60,
+        60,
+        0,
+        Math.PI * 2
+    );
+
     ctx.clip();
 
-    ctx.drawImage(badgeImg,x,y,size,size);
+    ctx.drawImage(
+        badgeImg,
+        x,
+        y,
+        size,
+        size
+    );
+
     ctx.restore();
 }
 
-/* TEXT (FIXED PERFECT VERTICAL CENTRE) */
+/* TEXT */
 function drawText(){
 
-    const player = playerNameInput.value || "Player Name";
-    const club = clubNameInput.value || "Club Name";
-    const sponsor = sponsorInput.value || "Sponsored by...";
+    const player =
+        playerNameInput.value || "Player Name";
+
+    const club =
+        clubNameInput.value || "Club Name";
+
+    const sponsor =
+        sponsorInput.value || "Sponsored by...";
 
     /* TOP BAR */
     ctx.fillStyle = "rgba(0,0,0,0.55)";
@@ -273,7 +333,11 @@ function drawText(){
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    ctx.fillText(club,540,55);
+    ctx.fillText(
+        club,
+        540,
+        55
+    );
 
     /* BOTTOM PANEL */
     ctx.fillStyle = "rgba(0,0,0,0.75)";
@@ -281,21 +345,21 @@ function drawText(){
 
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
 
-    /* PLAYER AREA (TRUE CENTRE) */
+    /* PLAYER AREA */
     const playerAreaY = 860;
     const playerAreaH = 140;
 
     ctx.font = "800 72px Inter";
-    ctx.textBaseline = "middle";
 
     ctx.fillText(
         player,
         540,
-        playerAreaY + playerAreaH / 2
+        playerAreaY + (playerAreaH / 2)
     );
 
-    /* SPONSOR AREA (TRUE CENTRE) */
+    /* SPONSOR AREA */
     const sponsorAreaY = 1000;
     const sponsorAreaH = 80;
 
@@ -304,13 +368,15 @@ function drawText(){
     ctx.fillText(
         sponsor,
         540,
-        sponsorAreaY + sponsorAreaH / 2
+        sponsorAreaY + (sponsorAreaH / 2)
     );
 }
 
-/* DRAW */
+/* MAIN DRAW */
 function draw(){
+
     ctx.clearRect(0,0,1080,1080);
+
     drawBackground();
     drawPlayer();
     drawText();
@@ -318,28 +384,40 @@ function draw(){
 }
 
 /* LIVE UPDATE */
-[playerNameInput, clubNameInput, sponsorInput].forEach(i=>{
-    i.addEventListener("input", draw);
+[playerNameInput, clubNameInput, sponsorInput]
+.forEach(input => {
+
+    input.addEventListener(
+        "input",
+        draw
+    );
+
 });
 
-/* BUTTONS */
-document.getElementById("generateBtn").addEventListener("click", draw);
-
-document.getElementById("downloadBtn").addEventListener("click", ()=>{
+/* DOWNLOAD */
+document.getElementById("downloadBtn")
+.addEventListener("click", () => {
 
     draw();
 
-    const link = document.createElement("a");
-    const name = (playerNameInput.value || "image")
+    const link =
+        document.createElement("a");
+
+    const filename =
+        (playerNameInput.value || "image")
         .toLowerCase()
         .replace(/\s+/g,"-");
 
-    link.download = name + ".png";
-    link.href = canvas.toDataURL("image/png");
+    link.download =
+        filename + ".png";
+
+    link.href =
+        canvas.toDataURL("image/png");
+
     link.click();
 });
 
-/* FIRST DRAW */
+/* INITIAL DRAW */
 draw();
 </script>
 
