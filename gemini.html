@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Sports Card Generator</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: #1e293b;
+            --accent-color: #38bdf8;
+            --text-color: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        h1 span {
+            color: var(--accent-color);
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            background: var(--panel-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .controls {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+        }
+
+        input[type="text"], input[type="file"], select {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #475569;
+            background: #0f172a;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: var(--accent-color);
+        }
+
+        .color-pickers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .color-picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #0f172a;
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: 1px solid #475569;
+        }
+
+        input[type="color"] {
+            border: none;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .preview-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        canvas {
+            background: #000;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            max-width: 100%;
+            height: auto;
+        }
+
+        .btn {
+            background: var(--accent-color);
+            color: #000;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.2s, transform 0.1s;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #7dd3fc;
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Responsive Hack */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Card <span>Generator</span></h1>
+
+    <div class="container">
+        <div class="controls">
+            <div class="control-group">
+                <label for="playerName">Player Name</label>
+                <input type="text" id="playerName" value="DIOGO JOTA" placeholder="Enter player name">
+            </div>
+
+            <div class="control-group">
+                <label for="clubName">Club Name</label>
+                <input type="text" id="clubName" value="LIVERPOOL FC" placeholder="Enter club name">
+            </div>
+
+            <div class="control-group">
+                <label for="sponsorName">Sponsor</label>
+                <input type="text" id="sponsorName" value="Standard Chartered" placeholder="Enter sponsor name">
+            </div>
+
+            <div class="control-group">
+                <label>Theme Gradient Colors</label>
+                <div class="color-pickers">
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="color1" value="#dc2626">
+                        <label for="color1">Primary</label>
+                    </div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="color2" value="#111827">
+                        <label for="color2">Secondary</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label for="playerImg">Player Portrait Photo</label>
+                <input type="file" id="playerImg" accept="image/*">
+            </div>
+
+            <div class="control-group">
+                <label for="badgeImg">Team Badge</label>
+                <input type="file" id="badgeImg" accept="image/*">
+            </div>
+
+            <button class="btn" id="downloadBtn">Download Card</button>
+        </div>
+
+        <div class="preview-area">
+            <canvas id="cardCanvas" width="400" height="560"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('cardCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Inputs
+        const playerNameInput = document.getElementById('playerName');
+        const clubNameInput = document.getElementById('clubName');
+        const sponsorNameInput = document.getElementById('sponsorName');
+        const color1Input = document.getElementById('color1');
+        const color2Input = document.getElementById('color2');
+        const playerImgInput = document.getElementById('playerImg');
+        const badgeImgInput = document.getElementById('badgeImg');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        // State for loaded images
+        let loadedPlayerImg = null;
+        let loadedBadgeImg = null;
+
+        // Auto-sizing Text Helper function
+        function drawAutosizedText(ctx, text, x, y, maxWidth, baseSize, fontFace, weight = 'bold') {
+            let fontSize = baseSize;
+            ctx.font = `${weight} ${fontSize}px ${fontFace}`;
+            
+            // Loop to reduce text until it fits safely within maxWidth boundaries
+            while (ctx.measureText(text).width > maxWidth && fontSize > 12) {
+                fontSize--;
+                ctx.font = `${weight} ${fontSize}px ${fontFace}`;
+            }
+            
+            ctx.fillText(text, x, y);
+            return fontSize; // returns used size just in case
+        }
+
+        function drawCard() {
+            // 1. Clear Canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 2. Background Gradient 
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, color1Input.value);
+            gradient.addColorStop(0.7, color2Input.value);
+            gradient.addColorStop(1, '#000000');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 3. Subtle background geometric accents
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(canvas.width * 0.7, 0);
+            ctx.lineTo(canvas.width * 0.3, canvas.height);
+            ctx.lineTo(0, canvas.height);
+            ctx.closePath();
+            ctx.fill();
+
+            // 4. Draw Player Image
+            if (loadedPlayerImg) {
+                // Calculate aspect ratio fit (Centered and anchored toward bottom)
+                const wrh = loadedPlayerImg.width / loadedPlayerImg.height;
+                let newWidth = canvas.width * 0.95;
+                let newHeight = newWidth / wrh;
+                
+                if (newHeight < canvas.height * 0.65) {
+                    newHeight = canvas.height * 0.65;
+                    newWidth = newHeight * wrh;
+                }
+
+                const x = (canvas.width - newWidth) / 2;
+                const y = (canvas.height * 0.72) - newHeight; // align bottom right above dynamic UI text
+
+                ctx.save();
+                // Create a fade effect on the bottom of the player's photo
+                ctx.drawImage(loadedPlayerImg, x, y, newWidth, newHeight);
+                ctx.restore();
+            } else {
+                // Placeholder if no photo uploaded
+                ctx.fillStyle = 'rgba(255,255,255,0.1)';
+                ctx.textAlign = 'center';
+                ctx.font = 'italic 16px sans-serif';
+                ctx.fillText('[Upload Player Photo]', canvas.width / 2, canvas.height * 0.4);
+            }
+
+            // 5. Draw Sleek Modern Info Bar Graphic at bottom
+            const uiStartY = canvas.height * 0.72;
+            
+            // Bottom translucent dark card panel
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+            ctx.strokeStyle = color1Input.value;
+            ctx.lineWidth = 3;
+            
+            ctx.beginPath();
+            ctx.moveTo(20, uiStartY);
+            ctx.lineTo(canvas.width - 20, uiStartY);
+            ctx.lineTo(canvas.width - 35, canvas.height - 20);
+            ctx.lineTo(35, canvas.height - 20);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // 6. Draw Team Badge (Top Right Corner or Left UI bar depending on style)
+            if (loadedBadgeImg) {
+                ctx.drawImage(loadedBadgeImg, canvas.width - 70, uiStartY + 15, 40, 40);
+            }
+
+            // 7. Render Typography with automatic scaling
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'left';
+
+            // Player Name
+            const nameX = 45;
+            const maxTextWidth = loadedBadgeImg ? canvas.width - 130 : canvas.width - 90;
+            drawAutosizedText(ctx, playerNameInput.value.toUpperCase(), nameX, uiStartY + 35, maxTextWidth, 26, 'Impact, sans-serif');
+
+            // Club Name
+            ctx.fillStyle = '#cbd5e1'; // muted gray-white
+            drawAutosizedText(ctx, clubNameInput.value.toUpperCase(), nameX, uiStartY + 55, maxTextWidth, 14, 'Arial, sans-serif', 'normal');
+
+            // Sponsor text
+            ctx.fillStyle = color1Input.value; // Give sponsor your brand color pop
+            ctx.font = 'bold 11px Arial';
+            ctx.fillText("SPONSORED BY:", nameX, uiStartY + 80);
+
+            ctx.fillStyle = '#ffffff';
+            drawAutosizedText(ctx, sponsorNameInput.value, nameX, uiStartY + 96, maxTextWidth, 15, 'Arial', 'bold');
+        }
+
+        // Event listener functions to process image file uploads
+        function handleImageUpload(e, callback) {
+            const reader = new FileReader();
+            reader.onload = function(event){
+                const img = new Image();
+                img.onload = function(){
+                    callback(img);
+                    drawCard();
+                }
+                img.src = event.target.result;
+            }
+            if(e.target.files[0]) {
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        }
+
+        // Event Listeners for inputs
+        playerNameInput.addEventListener('input', drawCard);
+        clubNameInput.addEventListener('input', drawCard);
+        sponsorNameInput.addEventListener('input', drawCard);
+        color1Input.addEventListener('input', drawCard);
+        color2Input.addEventListener('input', drawCard);
+
+        playerImgInput.addEventListener('change', (e) => {
+            handleImageUpload(e, (img) => { loadedPlayerImg = img; });
+        });
+
+        badgeImgInput.addEventListener('change', (e) => {
+            handleImageUpload(e, (img) => { loadedBadgeImg = img; });
+        });
+
+        // Trigger download action
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = `${playerNameInput.value.replace(/\s+/g, '_')}_card.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+
+        // Initial draw on bootup
+        window.onload = () => {
+            drawCard();
+        };
+    </script>
+</body>
+</html>
