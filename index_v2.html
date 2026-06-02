@@ -6,183 +6,66 @@
 
 <title>Image Creator Pro</title>
 
+<!-- FONT -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+<!-- EXTERNAL CSS -->
+<link rel="stylesheet" href="style.css">
 
-body{
-    font-family:'Inter',sans-serif;
-    background:#0f172a;
-    color:white;
-    padding:30px;
-}
-
-.container{
-    max-width:1400px;
-    margin:auto;
-}
-
-h1{
-    font-size:42px;
-    font-weight:800;
-    margin-bottom:10px;
-}
-
-.subtitle{
-    color:#cbd5e1;
-    margin-bottom:30px;
-}
-
-.layout{
-    display:grid;
-    grid-template-columns:380px 1fr;
-    gap:30px;
-}
-
-.controls{
-    background:#111827;
-    border-radius:20px;
-    padding:25px;
-    border:1px solid #1e293b;
-}
-
-.control-group{
-    margin-bottom:22px;
-}
-
-label{
-    display:block;
-    margin-bottom:8px;
-    font-weight:600;
-}
-
-input[type="text"]{
-    width:100%;
-    padding:14px;
-    border-radius:12px;
-    border:1px solid #334155;
-    background:#0f172a;
-    color:white;
-    font-size:15px;
-}
-
-input[type="file"]{
-    width:100%;
-    padding:12px;
-    border-radius:12px;
-    border:1px dashed #475569;
-    background:#0f172a;
-    color:#cbd5e1;
-}
-
-button{
-    width:100%;
-    padding:14px;
-    margin-top:10px;
-    border:none;
-    border-radius:14px;
-    cursor:pointer;
-    font-weight:700;
-    font-size:15px;
-}
-
-.generate-btn{
-    background:#2563eb;
-    color:white;
-}
-
-.generate-btn:hover{
-    background:#1d4ed8;
-}
-
-.download-btn{
-    background:#10b981;
-    color:white;
-}
-
-.download-btn:hover{
-    background:#059669;
-}
-
-.canvas-wrap{
-    background:#111827;
-    padding:20px;
-    border-radius:20px;
-    border:1px solid #1e293b;
-}
-
-canvas{
-    width:100%;
-    max-width:700px;
-    aspect-ratio:1/1;
-    background:black;
-    border-radius:18px;
-    display:block;
-}
-
-.note{
-    margin-top:18px;
-    color:#94a3b8;
-    font-size:13px;
-}
-</style>
 </head>
 
 <body>
 
 <div class="container">
 
-<h1>Image Creator Pro</h1>
-<div class="subtitle">Create football graphics directly in your browser.</div>
+    <h1>Image Creator Pro</h1>
+    <div class="subtitle">Create football graphics directly in your browser.</div>
 
-<div class="layout">
+    <div class="layout">
 
-<!-- CONTROLS -->
-<div class="controls">
+        <!-- LEFT CONTROLS -->
+        <div class="controls">
 
-<div class="control-group">
-<label>Player Image</label>
-<input type="file" id="playerImage" accept="image/*">
-</div>
+            <div class="control-group">
+                <label>Player Image</label>
+                <input type="file" id="playerImage" accept="image/*">
+            </div>
 
-<div class="control-group">
-<label>Club Badge</label>
-<input type="file" id="clubBadge" accept="image/*">
-</div>
+            <div class="control-group">
+                <label>Club Badge</label>
+                <input type="file" id="clubBadge" accept="image/*">
+            </div>
 
-<div class="control-group">
-<label>Player Name</label>
-<input type="text" id="playerName" placeholder="Player Name">
-</div>
+            <div class="control-group">
+                <label>Player Name</label>
+                <input type="text" id="playerName" placeholder="Player Name">
+            </div>
 
-<div class="control-group">
-<label>Club Name</label>
-<input type="text" id="clubName" placeholder="Club Name">
-</div>
+            <div class="control-group">
+                <label>Club Name</label>
+                <input type="text" id="clubName" placeholder="Club Name">
+            </div>
 
-<div class="control-group">
-<label>Player Sponsor</label>
-<input type="text" id="playerSponsor" placeholder="Sponsored by...">
-</div>
+            <div class="control-group">
+                <label>Player Sponsor</label>
+                <input type="text" id="playerSponsor" placeholder="Sponsored by...">
+            </div>
 
-<button class="generate-btn" id="generateBtn">Generate Image</button>
-<button class="download-btn" id="downloadBtn">Download PNG</button>
+            <button class="generate-btn" id="generateBtn">Generate Image</button>
+            <button class="download-btn" id="downloadBtn">Download PNG</button>
 
-<div class="note">Output size: 1080 × 1080</div>
+            <div class="note">Output size: 1080 × 1080</div>
 
-</div>
+        </div>
 
-<!-- PREVIEW -->
-<div class="canvas-wrap">
-<canvas id="canvas" width="1080" height="1080"></canvas>
-</div>
+        <!-- RIGHT PREVIEW -->
+        <div class="preview">
+            <div class="canvas-wrap">
+                <canvas id="canvas" width="1080" height="1080"></canvas>
+            </div>
+        </div>
 
-</div>
+    </div>
 </div>
 
 <script>
@@ -202,9 +85,10 @@ let badgeImg = null;
 /* IMAGE LOADER */
 function loadImage(file, callback){
     if(!file) return;
+
     const reader = new FileReader();
 
-    reader.onload = function(e){
+    reader.onload = e => {
         const img = new Image();
         img.onload = () => callback(img);
         img.src = e.target.result;
@@ -213,7 +97,7 @@ function loadImage(file, callback){
     reader.readAsDataURL(file);
 }
 
-/* FILE EVENTS */
+/* FILE INPUTS */
 playerInput.addEventListener("change", e=>{
     loadImage(e.target.files[0], img=>{
         playerImg = img;
@@ -231,18 +115,17 @@ badgeInput.addEventListener("change", e=>{
 /* BACKGROUND */
 function drawBackground(){
     const gradient = ctx.createLinearGradient(0,0,1080,1080);
-    gradient.addColorStop(0, "#0f172a");
-    gradient.addColorStop(1, "#2563eb");
+    gradient.addColorStop(0,"#0f172a");
+    gradient.addColorStop(1,"#2563eb");
 
     ctx.fillStyle = gradient;
     ctx.fillRect(0,0,1080,1080);
 }
 
-/* PLAYER */
+/* PLAYER IMAGE */
 function drawPlayer(){
     if(!playerImg) return;
-
-    ctx.drawImage(playerImg, 140, 145, 800, 680);
+    ctx.drawImage(playerImg,140,145,800,680);
 }
 
 /* BADGE */
@@ -255,38 +138,39 @@ function drawBadge(){
 
     ctx.save();
     ctx.beginPath();
-    ctx.arc(x+60, y+60, 60, 0, Math.PI*2);
+    ctx.arc(x+60,y+60,60,0,Math.PI*2);
     ctx.clip();
 
-    ctx.drawImage(badgeImg, x, y, size, size);
+    ctx.drawImage(badgeImg,x,y,size,size);
     ctx.restore();
 }
 
 /* TEXT */
 function drawText(){
+
     const player = playerNameInput.value || "Player Name";
     const club = clubNameInput.value || "Club Name";
     const sponsor = sponsorInput.value || "Sponsored by...";
 
-    // top bar
+    // TOP BAR
     ctx.fillStyle = "rgba(0,0,0,0.55)";
     ctx.fillRect(0,0,1080,110);
 
     ctx.fillStyle = "white";
     ctx.font = "800 54px Inter";
     ctx.textAlign = "center";
-    ctx.fillText(club, 540, 60);
+    ctx.fillText(club,540,60);
 
-    // bottom panel
+    // BOTTOM PANEL
     ctx.fillStyle = "rgba(0,0,0,0.75)";
     ctx.fillRect(0,860,1080,220);
 
     ctx.fillStyle = "white";
     ctx.font = "800 72px Inter";
-    ctx.fillText(player, 540, 930);
+    ctx.fillText(player,540,930);
 
     ctx.font = "600 30px Inter";
-    ctx.fillText(sponsor, 540, 1000);
+    ctx.fillText(sponsor,540,1000);
 }
 
 /* MAIN DRAW */
@@ -298,7 +182,7 @@ function generateImage(){
     drawBadge();
 }
 
-/* LIVE TEXT UPDATES */
+/* LIVE TEXT UPDATE */
 [playerNameInput, clubNameInput, sponsorInput].forEach(input=>{
     input.addEventListener("input", generateImage);
 });
@@ -307,17 +191,20 @@ function generateImage(){
 document.getElementById("generateBtn").addEventListener("click", generateImage);
 
 document.getElementById("downloadBtn").addEventListener("click", ()=>{
+
     generateImage();
 
     const link = document.createElement("a");
-    const name = (playerNameInput.value || "image").toLowerCase().replace(/\s+/g,"-");
+    const name = (playerNameInput.value || "image")
+        .toLowerCase()
+        .replace(/\s+/g,"-");
 
     link.download = name + ".png";
     link.href = canvas.toDataURL("image/png");
     link.click();
 });
 
-/* FIRST DRAW */
+/* INITIAL DRAW */
 generateImage();
 </script>
 
