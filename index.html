@@ -295,15 +295,14 @@ function drawPlayerImage(){
     if(!playerImg) return;
 
     /*
-        MOVED PLAYER IMAGE UP
-        SO IT SITS BETTER BETWEEN
-        CLUB NAME + PLAYER NAME
+        IMAGE NOW PROPERLY CENTERED
+        BETWEEN CLUB NAME + PLAYER NAME
     */
 
     const targetX = 140;
-    const targetY = 95;
+    const targetY = 145;
     const targetWidth = 800;
-    const targetHeight = 730;
+    const targetHeight = 680;
 
     const imgRatio = playerImg.width / playerImg.height;
     const targetRatio = targetWidth / targetHeight;
@@ -365,11 +364,15 @@ function drawBadge(){
 
 function drawText(){
 
+    /*
+        KEEP ORIGINAL TYPED CASE
+    */
+
     const playerName =
-        playerNameInput.value || 'PLAYER NAME';
+        playerNameInput.value || 'Player Name';
 
     const clubName =
-        clubNameInput.value || 'CLUB NAME';
+        clubNameInput.value || 'Club Name';
 
     const sponsor =
         sponsorInput.value || 'Sponsored by...';
@@ -391,42 +394,42 @@ function drawText(){
     ctx.textBaseline = 'middle';
 
     ctx.fillText(
-        clubName.toUpperCase(),
+        clubName,
         540,
         55
     );
 
     /*
-        SMALLER BOTTOM GRAPHIC
+        BOTTOM GRAPHIC
     */
 
     ctx.fillStyle = 'rgba(0,0,0,0.75)';
-    ctx.fillRect(0,850,1080,180);
+    ctx.fillRect(0,860,1080,170);
 
     /*
         PLAYER NAME
+        MOVED LOWER
     */
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = '800 82px Inter';
+    ctx.font = '800 78px Inter';
 
     ctx.fillText(
-        playerName.toUpperCase(),
+        playerName,
         540,
-        950
+        955
     );
 
     /*
         SPONSOR TEXT
     */
 
-    ctx.fillStyle = '#ffffff';
     ctx.font = '600 30px Inter';
 
     ctx.fillText(
         sponsor,
         540,
-        1005
+        1008
     );
 }
 
