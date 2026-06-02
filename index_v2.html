@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Image Creator Pro - Next Level</title>
+<title>Image Creator Pro - Centre Locked</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
@@ -31,29 +31,21 @@ body{
     border-radius:14px;
 }
 
+label{
+    display:block;
+    font-size:13px;
+    margin-top:10px;
+    color:#cbd5e1;
+}
+
 input, select{
     width:100%;
-    margin-bottom:10px;
     padding:10px;
     border-radius:10px;
     border:1px solid #334155;
     background:#0f172a;
     color:white;
-}
-
-label{
-    font-size:13px;
-    margin-top:8px;
-    display:block;
-    color:#cbd5e1;
-}
-
-canvas{
-    width:100%;
-    max-width:700px;
-    border-radius:16px;
-    background:black;
-    display:block;
+    margin-top:5px;
 }
 
 button{
@@ -70,9 +62,13 @@ button{
     background:#10b981;
     color:white;
 }
-.reset{
-    background:#2563eb;
-    color:white;
+
+canvas{
+    width:100%;
+    max-width:700px;
+    border-radius:16px;
+    background:black;
+    display:block;
 }
 </style>
 </head>
@@ -86,24 +82,11 @@ button{
 
 <h2>Image Creator Pro</h2>
 
-<label>Template</label>
-<select id="template">
-<option value="matchday">Matchday</option>
-<option value="transfer">Transfer</option>
-<option value="goal">Goal Scorer</option>
-</select>
-
-<label>Format</label>
-<select id="format">
-<option value="square">Instagram 1:1</option>
-<option value="story">Story 9:16</option>
-</select>
-
 <label>Player Image</label>
-<input type="file" id="playerImg">
+<input type="file" id="player">
 
 <label>Club Badge</label>
-<input type="file" id="badgeImg">
+<input type="file" id="badge">
 
 <label>Player Name</label>
 <input id="playerName">
@@ -118,9 +101,8 @@ button{
 <input type="range" id="zoom" min="0.5" max="2" step="0.01" value="1">
 
 <label>Rotate</label>
-<input type="range" id="rotate" min="-20" max="20" value="0">
+<input type="range" id="rotate" min="-25" max="25" value="0">
 
-<button class="reset" onclick="resetPlayer()">Reset Position</button>
 <button class="download" onclick="download()">Download PNG</button>
 
 </div>
@@ -134,75 +116,108 @@ button{
 
 <script>
 
-const c=document.getElementById("c");
-const ctx=c.getContext("2d");
+const c = document.getElementById("c");
+const ctx = c.getContext("2d");
 
-let img=null;
-let badge=null;
+let img = null;
+let badge = null;
 
-let x=150,y=150;
-let dragging=false;
+/*
+    CENTRE LOCKED POSITION
+*/
+let cx = 540;
+let cy = 450;
 
-let zoom=1;
-let rot=0;
+let zoom = 1;
+let rot = 0;
+let dragging = false;
 
 function draw(){
 
-const template=document.getElementById("template").value;
-
-const g=ctx.createLinearGradient(0,0,c.width,c.height);
-
-if(template==="matchday"){
+const g = ctx.createLinearGradient(0,0,1080,1080);
 g.addColorStop(0,"#0f172a");
 g.addColorStop(1,"#2563eb");
-}
-if(template==="transfer"){
-g.addColorStop(0,"#111827");
-g.addColorStop(1,"#dc2626");
-}
-if(template==="goal"){
-g.addColorStop(0,"#000");
-g.addColorStop(1,"#f59e0b");
-}
 
-ctx.fillStyle=g;
-ctx.fillRect(0,0,c.width,c.height);
+ctx.fillStyle = g;
+ctx.fillRect(0,0,1080,1080);
 
-// TEXT
+/*
+    TOP BAR
+*/
+ctx.fillStyle="rgba(0,0,0,0.5)";
+ctx.fillRect(0,0,1080,110);
+
 ctx.fillStyle="#fff";
-ctx.font="800 60px Inter";
+ctx.font="800 54px Inter";
+ctx.textAlign="center";
+ctx.fillText(
+    document.getElementById("clubName").value || "CLUB NAME",
+    540,
+    60
+);
+
+/*
+    PLAYER IMAGE (CENTRE LOCKED)
+*/
+if(img){
+
+    const w = 650 * zoom;
+    const h = 550 * zoom;
+
+    ctx.save();
+
+    ctx.translate(cx, cy);
+    ctx.rotate(rot * Math.PI / 180);
+
+    ctx.drawImage(
+        img,
+        -w / 2,
+        -h / 2,
+        w,
+        h
+    );
+
+    ctx.restore();
+}
+
+/*
+    LOWER PANEL
+*/
+ctx.fillStyle="rgba(0,0,0,0.75)";
+ctx.fillRect(0,850,1080,230);
+
+/*
+    TEXT
+*/
+ctx.fillStyle="#fff";
 ctx.textAlign="center";
 
-ctx.fillText(document.getElementById("clubName").value||"CLUB",540,70);
+ctx.font="800 72px Inter";
+ctx.fillText(
+    document.getElementById("playerName").value || "PLAYER NAME",
+    540,
+    930
+);
 
-// IMAGE
-if(img){
-ctx.save();
-ctx.translate(x+300,y+300);
-ctx.rotate(rot*Math.PI/180);
+ctx.font="600 30px Inter";
+ctx.fillText(
+    document.getElementById("sponsor").value || "SPONSOR",
+    540,
+    1000
+);
 
-ctx.drawImage(img,-300*zoom,-250*zoom,600*zoom,500*zoom);
-
-ctx.restore();
-}
-
-// BOTTOM
-ctx.fillStyle="rgba(0,0,0,0.6)";
-ctx.fillRect(0,850,c.width,230);
-
-ctx.font="800 70px Inter";
-ctx.fillText(document.getElementById("playerName").value||"PLAYER",540,930);
-
-ctx.font="400 30px Inter";
-ctx.fillText(document.getElementById("sponsor").value||"Sponsor",540,1000);
-
-// BADGE
+/*
+    BADGE (LOWER LEFT CENTRED)
+*/
 if(badge){
-ctx.drawImage(badge,40,880,120,120);
+    ctx.drawImage(badge,40,880,120,120);
 }
 
 }
 
+/*
+    LOAD IMAGE
+*/
 function load(file,cb){
 const r=new FileReader();
 r.onload=e=>{
@@ -213,54 +228,53 @@ i.src=e.target.result;
 r.readAsDataURL(file);
 }
 
-document.getElementById("playerImg").onchange=e=>{
+/*
+    INPUTS
+*/
+document.getElementById("player").onchange=e=>{
 load(e.target.files[0],i=>{img=i;draw();});
 };
 
-document.getElementById("badgeImg").onchange=e=>{
+document.getElementById("badge").onchange=e=>{
 load(e.target.files[0],i=>{badge=i;draw();});
 };
 
-document.querySelectorAll("input,select").forEach(el=>{
-el.addEventListener("input",()=>{
+document.querySelectorAll("input").forEach(i=>{
+i.addEventListener("input",()=>{
 zoom=document.getElementById("zoom").value;
 rot=document.getElementById("rotate").value;
 draw();
 });
 });
 
-// DRAGGING
-c.onmousedown=e=>{
+/*
+    DRAGGING (CENTRE LOCKED)
+*/
+c.onmousedown=()=>{
 dragging=true;
 };
 
-c.onmouseup=e=>{
+c.onmouseup=()=>{
 dragging=false;
 };
 
 c.onmousemove=e=>{
 if(!dragging) return;
-x=e.offsetX-300;
-y=e.offsetY-250;
+cx = e.offsetX;
+cy = e.offsetY;
 draw();
 };
 
-// TOUCH
 c.ontouchmove=e=>{
 const t=e.touches[0];
-x=t.clientX-300;
-y=t.clientY-250;
+cx = t.clientX;
+cy = t.clientY;
 draw();
 };
 
-function resetPlayer(){
-x=150;
-y=150;
-zoom=1;
-rot=0;
-draw();
-}
-
+/*
+    DOWNLOAD
+*/
 function download(){
 draw();
 const a=document.createElement("a");
