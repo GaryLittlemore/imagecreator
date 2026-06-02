@@ -4,72 +4,104 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Image Creator Pro - Fixed</title>
+<title>Image Creator Pro – Enhanced</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-body{
-    margin:0;
-    font-family:Inter;
-    background:#0f172a;
-    color:white;
-    padding:20px;
-}
+    :root{
+        --bg:#0f172a;
+        --panel:#111827;
+        --border:#334155;
+        --accent:#10b981;
+        --text:#fff;
+        --sub:#cbd5e1;
+    }
 
-.container{
-    display:grid;
-    grid-template-columns:360px 1fr;
-    gap:20px;
-    max-width:1200px;
-    margin:auto;
-}
+    body{
+        margin:0;
+        font-family:Inter, sans-serif;
+        background:var(--bg);
+        color:var(--text);
+        padding:20px;
+    }
 
-.panel{
-    background:#111827;
-    padding:18px;
-    border-radius:14px;
-}
+    h2{
+        margin-top:0;
+        font-weight:800;
+        text-align:center;
+    }
 
-label{
-    display:block;
-    margin-top:10px;
-    font-size:13px;
-    color:#cbd5e1;
-}
+    .container{
+        display:flex;
+        flex-wrap:wrap;
+        gap:20px;
+        max-width:1400px;
+        margin:auto;
+    }
 
-input{
-    width:100%;
-    padding:10px;
-    border-radius:10px;
-    border:1px solid #334155;
-    background:#0f172a;
-    color:white;
-    margin-top:5px;
-}
+    .panel{
+        background:var(--panel);
+        padding:20px;
+        border-radius:16px;
+        width:350px;
+        flex-shrink:0;
+    }
 
-button{
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:12px;
-    margin-top:10px;
-    font-weight:700;
-    cursor:pointer;
-}
+    label{
+        display:block;
+        margin-top:14px;
+        font-size:14px;
+        color:var(--sub);
+        font-weight:600;
+    }
 
-.download{
-    background:#10b981;
-    color:white;
-}
+    input, select{
+        width:100%;
+        padding:10px;
+        border-radius:10px;
+        border:1px solid var(--border);
+        background:var(--bg);
+        color:var(--text);
+        margin-top:6px;
+        font-size:14px;
+    }
 
-canvas{
-    width:100%;
-    max-width:700px;
-    background:black;
-    border-radius:16px;
-    display:block;
-}
+    input[type="range"]{
+        cursor:pointer;
+    }
+
+    button{
+        width:100%;
+        padding:14px;
+        border:none;
+        border-radius:12px;
+        margin-top:16px;
+        font-weight:700;
+        cursor:pointer;
+        font-size:15px;
+    }
+
+    .download{
+        background:var(--accent);
+        color:white;
+    }
+
+    canvas{
+        width:100%;
+        max-width:900px;
+        background:black;
+        border-radius:20px;
+        display:block;
+        margin:auto;
+    }
+
+    /* Responsive */
+    @media(max-width:900px){
+        .panel{
+            width:100%;
+        }
+    }
 </style>
 </head>
 
@@ -77,38 +109,35 @@ canvas{
 
 <div class="container">
 
-<div class="panel">
+    <div class="panel">
+        <h2>Image Creator Pro</h2>
 
-<h2>Image Creator Pro</h2>
+        <label>Player Image</label>
+        <input type="file" id="player">
 
-<label>Player Image</label>
-<input type="file" id="player">
+        <label>Club Badge</label>
+        <input type="file" id="badge">
 
-<label>Club Badge</label>
-<input type="file" id="badge">
+        <label>Player Name</label>
+        <input type="text" id="playerName" placeholder="e.g. Lionel Messi">
 
-<label>Player Name</label>
-<input type="text" id="playerName">
+        <label>Club Name</label>
+        <input type="text" id="clubName" placeholder="e.g. Inter Miami">
 
-<label>Club Name</label>
-<input type="text" id="clubName">
+        <label>Sponsor</label>
+        <input type="text" id="sponsor" placeholder="e.g. Adidas">
 
-<label>Sponsor</label>
-<input type="text" id="sponsor">
+        <label>Zoom</label>
+        <input type="range" id="zoom" min="0.5" max="2" step="0.01" value="1">
 
-<label>Zoom</label>
-<input type="range" id="zoom" min="0.5" max="2" step="0.01" value="1">
+        <button class="download" onclick="download()">Download PNG</button>
+    </div>
 
-<button class="download" onclick="download()">Download PNG</button>
-
-</div>
-
-<canvas id="c" width="1080" height="1080"></canvas>
+    <canvas id="c" width="1080" height="1080"></canvas>
 
 </div>
 
 <script>
-
 const c = document.getElementById("c");
 const ctx = c.getContext("2d");
 
@@ -120,137 +149,111 @@ let y = 200;
 let zoom = 1;
 let dragging = false;
 
-/*
-    MAIN DRAW FUNCTION
-*/
+/* DRAW FUNCTION */
 function draw(){
+    ctx.clearRect(0,0,1080,1080);
 
-ctx.clearRect(0,0,1080,1080);
+    /* Background gradient */
+    const g = ctx.createLinearGradient(0,0,1080,1080);
+    g.addColorStop(0,"#0f172a");
+    g.addColorStop(1,"#2563eb");
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,1080,1080);
 
-/* background */
-const g = ctx.createLinearGradient(0,0,1080,1080);
-g.addColorStop(0,"#0f172a");
-g.addColorStop(1,"#2563eb");
+    /* Top bar */
+    ctx.fillStyle="rgba(0,0,0,0.5)";
+    ctx.fillRect(0,0,1080,110);
 
-ctx.fillStyle = g;
-ctx.fillRect(0,0,1080,1080);
+    ctx.fillStyle="#fff";
+    ctx.font="800 54px Inter";
+    ctx.textAlign="center";
+    ctx.fillText(
+        document.getElementById("clubName").value || "CLUB NAME",
+        540,60
+    );
 
-/* TOP BAR */
-ctx.fillStyle="rgba(0,0,0,0.5)";
-ctx.fillRect(0,0,1080,110);
+    /* Player image */
+    if(img){
+        ctx.drawImage(img,x,y,600*zoom,500*zoom);
+    }
 
-ctx.fillStyle="#fff";
-ctx.font="800 54px Inter";
-ctx.textAlign="center";
+    /* Bottom bar */
+    ctx.fillStyle="rgba(0,0,0,0.75)";
+    ctx.fillRect(0,850,1080,230);
 
-ctx.fillText(
-document.getElementById("clubName").value || "CLUB NAME",
-540,60
-);
+    ctx.fillStyle="#fff";
+    ctx.font="800 72px Inter";
+    ctx.fillText(
+        document.getElementById("playerName").value || "PLAYER NAME",
+        540,930
+    );
 
-/* PLAYER IMAGE */
-if(img){
-ctx.drawImage(img,x,y,600*zoom,500*zoom);
+    ctx.font="600 30px Inter";
+    ctx.fillText(
+        document.getElementById("sponsor").value || "SPONSOR",
+        540,1000
+    );
+
+    /* Badge */
+    if(badge){
+        ctx.drawImage(badge,40,880,120,120);
+    }
 }
 
-/* BOTTOM BAR */
-ctx.fillStyle="rgba(0,0,0,0.75)";
-ctx.fillRect(0,850,1080,230);
-
-ctx.fillStyle="#fff";
-ctx.font="800 72px Inter";
-ctx.textAlign="center";
-
-ctx.fillText(
-document.getElementById("playerName").value || "PLAYER NAME",
-540,930
-);
-
-ctx.font="600 30px Inter";
-ctx.fillText(
-document.getElementById("sponsor").value || "SPONSOR",
-540,1000
-);
-
-/* BADGE */
-if(badge){
-ctx.drawImage(badge,40,880,120,120);
-}
-
-}
-
-/*
-    IMAGE LOAD
-*/
+/* Load image helper */
 function load(file,cb){
-const r=new FileReader();
-r.onload=e=>{
-const i=new Image();
-i.onload=()=>cb(i);
-i.src=e.target.result;
-};
-r.readAsDataURL(file);
+    const r=new FileReader();
+    r.onload=e=>{
+        const i=new Image();
+        i.onload=()=>cb(i);
+        i.src=e.target.result;
+    };
+    r.readAsDataURL(file);
 }
 
-/*
-    INPUT EVENTS (FIXED: LIVE TEXT UPDATE)
-*/
+/* Live text update */
 document.querySelectorAll("input[type='text']").forEach(input=>{
     input.addEventListener("input", draw);
 });
 
-/*
-    OTHER INPUTS
-*/
+/* Zoom */
 document.getElementById("zoom").oninput=e=>{
-zoom = e.target.value;
-draw();
+    zoom = e.target.value;
+    draw();
 };
 
+/* Load player image */
 document.getElementById("player").onchange=e=>{
-load(e.target.files[0],i=>{img=i;draw();});
+    load(e.target.files[0],i=>{img=i;draw();});
 };
 
+/* Load badge */
 document.getElementById("badge").onchange=e=>{
-load(e.target.files[0],i=>{badge=i;draw();});
+    load(e.target.files[0],i=>{badge=i;draw();});
 };
 
-/*
-    DRAG IMAGE
-*/
-c.onmousedown=e=>{
-dragging=true;
-};
-
-c.onmouseup=e=>{
-dragging=false;
-};
+/* Drag image */
+c.onmousedown=()=> dragging=true;
+c.onmouseup=()=> dragging=false;
 
 c.onmousemove=e=>{
-if(!dragging || !img) return;
-
-x = e.offsetX - 300;
-y = e.offsetY - 250;
-
-draw();
+    if(!dragging || !img) return;
+    x = e.offsetX - 300;
+    y = e.offsetY - 250;
+    draw();
 };
 
-/*
-    DOWNLOAD
-*/
+/* Download */
 function download(){
-draw();
-const a=document.createElement("a");
-a.download="graphic.png";
-a.href=c.toDataURL();
-a.click();
+    draw();
+    const a=document.createElement("a");
+    a.download="graphic.png";
+    a.href=c.toDataURL();
+    a.click();
 }
 
-/*
-    INIT
-*/
+/* Init */
 draw();
-
 </script>
 
 </body>
