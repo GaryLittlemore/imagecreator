@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Image Creator Pro – Enhanced</title>
+<title>Image Creator Pro – Centered Version</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
@@ -56,7 +56,7 @@
         font-weight:600;
     }
 
-    input, select{
+    input{
         width:100%;
         padding:10px;
         border-radius:10px;
@@ -96,7 +96,6 @@
         margin:auto;
     }
 
-    /* Responsive */
     @media(max-width:900px){
         .panel{
             width:100%;
@@ -143,11 +142,7 @@ const ctx = c.getContext("2d");
 
 let img = null;
 let badge = null;
-
-let x = 240;
-let y = 200;
 let zoom = 1;
-let dragging = false;
 
 /* DRAW FUNCTION */
 function draw(){
@@ -172,9 +167,15 @@ function draw(){
         540,60
     );
 
-    /* Player image */
+    /* Player image ALWAYS CENTERED */
     if(img){
-        ctx.drawImage(img,x,y,600*zoom,500*zoom);
+        const imgW = 600 * zoom;
+        const imgH = 500 * zoom;
+
+        const centerX = (c.width - imgW) / 2;
+        const centerY = (c.height - imgH) / 2;
+
+        ctx.drawImage(img, centerX, centerY, imgW, imgH);
     }
 
     /* Bottom bar */
@@ -230,17 +231,6 @@ document.getElementById("player").onchange=e=>{
 /* Load badge */
 document.getElementById("badge").onchange=e=>{
     load(e.target.files[0],i=>{badge=i;draw();});
-};
-
-/* Drag image */
-c.onmousedown=()=> dragging=true;
-c.onmouseup=()=> dragging=false;
-
-c.onmousemove=e=>{
-    if(!dragging || !img) return;
-    x = e.offsetX - 300;
-    y = e.offsetY - 250;
-    draw();
 };
 
 /* Download */
