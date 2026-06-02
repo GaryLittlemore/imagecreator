@@ -164,7 +164,7 @@ canvas{
     <h1>Image Creator Pro</h1>
 
     <div class="subtitle">
-        Create football graphics directly in your browser.
+        Create Instagram-ready football graphics directly in your browser.
     </div>
 
     <div class="layout">
@@ -207,7 +207,8 @@ canvas{
             </div>
 
             <div class="note">
-                Output size: 1080 × 1080
+                Output size: 1080 × 1080<br>
+                Perfect for Instagram posts and GitHub Pages hosting.
             </div>
 
         </div>
@@ -376,7 +377,6 @@ function drawText(){
 
     /*
         CLUB NAME
-        CENTRED TOP TO BOTTOM
     */
 
     ctx.fillStyle = '#ffffff';
@@ -399,7 +399,6 @@ function drawText(){
 
     /*
         PLAYER NAME
-        MOVED LOWER
     */
 
     ctx.fillStyle = '#ffffff';
@@ -412,23 +411,10 @@ function drawText(){
     );
 
     /*
-        SPONSOR BOX
+        SPONSOR TEXT
     */
 
     ctx.fillStyle = '#ffffff';
-
-    roundRect(
-        ctx,
-        250,
-        975,
-        580,
-        60,
-        14
-    );
-
-    ctx.fill();
-
-    ctx.fillStyle = '#111827';
     ctx.font = '600 30px Inter';
 
     ctx.fillText(
@@ -436,27 +422,6 @@ function drawText(){
         540,
         1005
     );
-}
-
-function roundRect(ctx, x, y, width, height, radius){
-
-    ctx.beginPath();
-
-    ctx.moveTo(x + radius, y);
-
-    ctx.lineTo(x + width - radius, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-
-    ctx.lineTo(x + width, y + height - radius);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-
-    ctx.lineTo(x + radius, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
-
-    ctx.closePath();
 }
 
 function generateImage(){
