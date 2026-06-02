@@ -1,250 +1,440 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Image Creator Pro – Centered Version</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Image Creator Pro</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-
 <style>
-    :root{
-        --bg:#0f172a;
-        --panel:#111827;
-        --border:#334155;
-        --accent:#10b981;
-        --text:#fff;
-        --sub:#cbd5e1;
-    }
-
-    body{
-        margin:0;
-        font-family:Inter, sans-serif;
-        background:var(--bg);
-        color:var(--text);
-        padding:20px;
-    }
-
-    h2{
-        margin-top:0;
-        font-weight:800;
-        text-align:center;
-    }
-
-    .container{
-        display:flex;
-        flex-wrap:wrap;
-        gap:20px;
-        max-width:1400px;
-        margin:auto;
-    }
-
-    .panel{
-        background:var(--panel);
-        padding:20px;
-        border-radius:16px;
-        width:350px;
-        flex-shrink:0;
-    }
-
-    label{
-        display:block;
-        margin-top:14px;
-        font-size:14px;
-        color:var(--sub);
-        font-weight:600;
-    }
-
-    input{
-        width:100%;
-        padding:10px;
-        border-radius:10px;
-        border:1px solid var(--border);
-        background:var(--bg);
-        color:var(--text);
-        margin-top:6px;
-        font-size:14px;
-    }
-
-    input[type="range"]{
-        cursor:pointer;
-    }
-
-    button{
-        width:100%;
-        padding:14px;
-        border:none;
-        border-radius:12px;
-        margin-top:16px;
-        font-weight:700;
-        cursor:pointer;
-        font-size:15px;
-    }
-
-    .download{
-        background:var(--accent);
-        color:white;
-    }
-
-    canvas{
-        width:100%;
-        max-width:900px;
-        background:black;
-        border-radius:20px;
-        display:block;
-        margin:auto;
-    }
-
-    @media(max-width:900px){
-        .panel{
-            width:100%;
-        }
-    }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;background:#0f172a;color:#fff;padding:28px}
+  .container{max-width:1200px;margin:0 auto}
+  h1{font-size:40px;font-weight:800;margin-bottom:8px}
+  .subtitle{color:#cbd5e1;margin-bottom:20px}
+  .layout{display:grid;grid-template-columns:380px 1fr;gap:24px}
+  .controls{background:#0b1220;border-radius:16px;padding:20px;border:1px solid #1e293b}
+  .control-group{margin-bottom:16px}
+  label{display:block;margin-bottom:8px;font-weight:600}
+  input[type="text"], input[type="file"], .range{width:100%;padding:10px;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#fff}
+  .button-row{display:flex;gap:10px;margin-top:12px}
+  button{flex:1;padding:12px;border-radius:12px;border:none;cursor:pointer;font-weight:700}
+  .generate-btn{background:#2563eb;color:#fff}
+  .download-btn{background:#10b981;color:#fff}
+  .preview{display:flex;justify-content:center;align-items:flex-start}
+  .canvas-wrap{background:#0b1220;padding:16px;border-radius:16px;border:1px solid #1e293b}
+  canvas{width:100%;max-width:720px;aspect-ratio:1/1;border-radius:12px;background:#000;display:block}
+  .note{margin-top:12px;color:#94a3b8;font-size:13px}
+  .small{font-size:13px;color:#94a3b8}
+  .controls .row{display:flex;gap:8px}
+  .error{color:#ff7b7b;margin-top:8px}
+  .spinner{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,0.12);border-top-color:#fff;border-radius:50%;animation:spin .9s linear infinite;vertical-align:middle;margin-left:8px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @media(max-width:1000px){.layout{grid-template-columns:1fr}}
 </style>
 </head>
-
 <body>
-
 <div class="container">
+  <h1>Image Creator Pro</h1>
+  <div class="subtitle">Create football graphics directly in your browser</div>
 
-    <div class="panel">
-        <h2>Image Creator Pro</h2>
+  <div class="layout">
+    <div class="controls" role="region" aria-label="Controls">
+      <div class="control-group">
+        <label for="playerImage">Player Image</label>
+        <input id="playerImage" type="file" accept="image/*" aria-describedby="playerHelp">
+        <div id="playerHelp" class="small">Drag to reposition; scroll to zoom.</div>
+      </div>
 
-        <label>Player Image</label>
-        <input type="file" id="player">
+      <div class="control-group">
+        <label for="clubBadge">Club Badge</label>
+        <input id="clubBadge" type="file" accept="image/*">
+      </div>
 
-        <label>Club Badge</label>
-        <input type="file" id="badge">
+      <div class="control-group">
+        <label for="playerName">Player Name</label>
+        <input id="playerName" type="text" placeholder="Player Name" aria-label="Player Name">
+      </div>
 
-        <label>Player Name</label>
-        <input type="text" id="playerName" placeholder="e.g. Lionel Messi">
+      <div class="control-group">
+        <label for="clubName">Club Name</label>
+        <input id="clubName" type="text" placeholder="Club Name" aria-label="Club Name">
+      </div>
 
-        <label>Club Name</label>
-        <input type="text" id="clubName" placeholder="e.g. Inter Miami">
+      <div class="control-group">
+        <label for="playerSponsor">Player Sponsor</label>
+        <input id="playerSponsor" type="text" placeholder="Sponsored by..." aria-label="Sponsor">
+      </div>
 
-        <label>Sponsor</label>
-        <input type="text" id="sponsor" placeholder="e.g. Adidas">
+      <div class="control-group">
+        <label for="scale">Scale</label>
+        <input id="scale" class="range" type="range" min="0.5" max="2.5" step="0.01" value="1" aria-label="Scale">
+      </div>
 
-        <label>Zoom</label>
-        <input type="range" id="zoom" min="0.5" max="2" step="0.01" value="1">
+      <div class="control-group">
+        <label for="rotation">Rotation</label>
+        <input id="rotation" class="range" type="range" min="-30" max="30" step="0.5" value="0" aria-label="Rotation">
+      </div>
 
-        <button class="download" onclick="download()">Download PNG</button>
+      <div class="button-row">
+        <button id="generateBtn" class="generate-btn" aria-label="Generate Image">Generate Image</button>
+        <button id="downloadBtn" class="download-btn" aria-label="Download PNG">Download PNG</button>
+      </div>
+
+      <div id="status" class="note small" aria-live="polite">Output size: 1080 × 1080</div>
+      <div id="error" class="error" role="alert" hidden></div>
     </div>
 
-    <canvas id="c" width="1080" height="1080"></canvas>
-
+    <div class="preview">
+      <div class="canvas-wrap" aria-hidden="false">
+        <canvas id="canvas" width="1080" height="1080"></canvas>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-const c = document.getElementById("c");
-const ctx = c.getContext("2d");
+/* Utility helpers */
+const $ = id => document.getElementById(id);
+const canvas = $('canvas');
+const ctx = canvas.getContext('2d', { alpha: false });
 
-let img = null;
-let badge = null;
-let zoom = 1;
+const playerInput = $('playerImage');
+const badgeInput = $('clubBadge');
+const playerNameInput = $('playerName');
+const clubNameInput = $('clubName');
+const sponsorInput = $('playerSponsor');
+const scaleInput = $('scale');
+const rotationInput = $('rotation');
+const status = $('status');
+const errorBox = $('error');
 
-/* DRAW FUNCTION */
-function draw(){
-    ctx.clearRect(0,0,1080,1080);
+let playerImg = null;
+let badgeImg = null;
 
-    /* Background gradient */
-    const g = ctx.createLinearGradient(0,0,1080,1080);
-    g.addColorStop(0,"#0f172a");
-    g.addColorStop(1,"#2563eb");
-    ctx.fillStyle = g;
-    ctx.fillRect(0,0,1080,1080);
+/* Transform state for player image */
+const playerState = {
+  x: 540, y: 540, // center
+  scale: 1,
+  rotation: 0,
+  dragging: false,
+  lastPointer: null,
+  naturalW: 0,
+  naturalH: 0
+};
 
-    /* Top bar */
-    ctx.fillStyle="rgba(0,0,0,0.5)";
-    ctx.fillRect(0,0,1080,110);
+let needsRender = true;
 
-    ctx.fillStyle="#fff";
-    ctx.font="800 54px Inter";
-    ctx.textAlign="center";
-    ctx.fillText(
-        document.getElementById("clubName").value || "CLUB NAME",
-        540,60
-    );
-
-    /* Player image ALWAYS CENTERED */
-    if(img){
-        const imgW = 600 * zoom;
-        const imgH = 500 * zoom;
-
-        const centerX = (c.width - imgW) / 2;
-        const centerY = (c.height - imgH) / 2;
-
-        ctx.drawImage(img, centerX, centerY, imgW, imgH);
-    }
-
-    /* Bottom bar */
-    ctx.fillStyle="rgba(0,0,0,0.75)";
-    ctx.fillRect(0,850,1080,230);
-
-    ctx.fillStyle="#fff";
-    ctx.font="800 72px Inter";
-    ctx.fillText(
-        document.getElementById("playerName").value || "PLAYER NAME",
-        540,930
-    );
-
-    ctx.font="600 30px Inter";
-    ctx.fillText(
-        document.getElementById("sponsor").value || "SPONSOR",
-        540,1000
-    );
-
-    /* Badge */
-    if(badge){
-        ctx.drawImage(badge,40,880,120,120);
-    }
-}
-
-/* Load image helper */
-function load(file,cb){
-    const r=new FileReader();
-    r.onload=e=>{
-        const i=new Image();
-        i.onload=()=>cb(i);
-        i.src=e.target.result;
-    };
+/* Read file and return Image object with EXIF orientation handled */
+async function fileToImage(file){
+  if(!file) return null;
+  if(!file.type.startsWith('image/')) throw new Error('Invalid file type');
+  const dataUrl = await new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = rej;
     r.readAsDataURL(file);
+  });
+
+  return await new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = dataUrl;
+  });
 }
 
-/* Live text update */
-document.querySelectorAll("input[type='text']").forEach(input=>{
-    input.addEventListener("input", draw);
+/* Loaders with validation */
+playerInput.addEventListener('change', async (e) => {
+  clearError();
+  const f = e.target.files && e.target.files[0];
+  if(!f) return;
+  try{
+    status.innerHTML = 'Loading player image <span class="spinner" aria-hidden="true"></span>';
+    const img = await fileToImage(f);
+    playerImg = img;
+    playerState.naturalW = img.width;
+    playerState.naturalH = img.height;
+    // reset transform to center and fit
+    playerState.scale = Math.min(800 / img.width, 680 / img.height) * 1.05;
+    playerState.x = 540;
+    playerState.y = 540;
+    needsRender = true;
+    status.textContent = 'Player image loaded';
+  }catch(err){
+    showError('Failed to load player image');
+    console.error(err);
+  }finally{
+    setTimeout(()=>{ if(status.textContent.includes('Loading')) status.textContent = 'Output size: 1080 × 1080'; }, 800);
+  }
 });
 
-/* Zoom */
-document.getElementById("zoom").oninput=e=>{
-    zoom = e.target.value;
-    draw();
-};
+badgeInput.addEventListener('change', async (e) => {
+  clearError();
+  const f = e.target.files && e.target.files[0];
+  if(!f) return;
+  try{
+    status.innerHTML = 'Loading badge <span class="spinner" aria-hidden="true"></span>';
+    badgeImg = await fileToImage(f);
+    needsRender = true;
+    status.textContent = 'Badge loaded';
+  }catch(err){
+    showError('Failed to load badge');
+    console.error(err);
+  }finally{
+    setTimeout(()=>{ if(status.textContent.includes('Loading')) status.textContent = 'Output size: 1080 × 1080'; }, 800);
+  }
+});
 
-/* Load player image */
-document.getElementById("player").onchange=e=>{
-    load(e.target.files[0],i=>{img=i;draw();});
-};
+/* Pointer interactions for dragging and zooming */
+canvas.addEventListener('pointerdown', (e) => {
+  if(!playerImg) return;
+  canvas.setPointerCapture(e.pointerId);
+  playerState.dragging = true;
+  playerState.lastPointer = { x: e.clientX, y: e.clientY };
+});
 
-/* Load badge */
-document.getElementById("badge").onchange=e=>{
-    load(e.target.files[0],i=>{badge=i;draw();});
-};
+canvas.addEventListener('pointermove', (e) => {
+  if(!playerState.dragging || !playerState.lastPointer) return;
+  const dx = e.clientX - playerState.lastPointer.x;
+  const dy = e.clientY - playerState.lastPointer.y;
+  playerState.x += dx;
+  playerState.y += dy;
+  playerState.lastPointer = { x: e.clientX, y: e.clientY };
+  needsRender = true;
+});
 
-/* Download */
-function download(){
-    draw();
-    const a=document.createElement("a");
-    a.download="graphic.png";
-    a.href=c.toDataURL();
-    a.click();
+canvas.addEventListener('pointerup', (e) => {
+  playerState.dragging = false;
+  playerState.lastPointer = null;
+  canvas.releasePointerCapture(e.pointerId);
+});
+
+canvas.addEventListener('wheel', (e) => {
+  if(!playerImg) return;
+  e.preventDefault();
+  const delta = -e.deltaY * 0.001;
+  playerState.scale = Math.max(0.3, Math.min(3, playerState.scale * (1 + delta)));
+  scaleInput.value = playerState.scale.toFixed(2);
+  needsRender = true;
+}, { passive: false });
+
+/* Sliders */
+scaleInput.addEventListener('input', (e) => {
+  playerState.scale = parseFloat(e.target.value);
+  needsRender = true;
+});
+rotationInput.addEventListener('input', (e) => {
+  playerState.rotation = parseFloat(e.target.value) * Math.PI / 180;
+  needsRender = true;
+});
+
+/* Draw helpers */
+function drawBackground(){
+  const g = ctx.createLinearGradient(0,0,1080,1080);
+  g.addColorStop(0, '#0f172a');
+  g.addColorStop(1, '#2563eb');
+  ctx.fillStyle = g;
+  ctx.fillRect(0,0,1080,1080);
 }
 
-/* Init */
-draw();
-</script>
+function drawPlayer(){
+  if(!playerImg) return;
+  // target area (same as original)
+  const targetW = 800;
+  const targetH = 680;
+  // compute scaled size from natural image using playerState.scale
+  const drawW = playerImg.width * playerState.scale;
+  const drawH = playerImg.height * playerState.scale;
 
+  ctx.save();
+  ctx.translate(playerState.x, playerState.y);
+  ctx.rotate(playerState.rotation);
+  ctx.drawImage(playerImg, -drawW/2, -drawH/2, drawW, drawH);
+  ctx.restore();
+}
+
+function drawBadge(){
+  if(!badgeImg) return;
+  const badgeSize = 120;
+  const badgeX = 40;
+  const badgeY = 886;
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(badgeX + badgeSize/2, badgeY + badgeSize/2, badgeSize/2, 0, Math.PI*2);
+  ctx.closePath();
+  ctx.clip();
+  ctx.drawImage(badgeImg, badgeX, badgeY, badgeSize, badgeSize);
+  ctx.restore();
+  ctx.strokeStyle = 'rgba(255,255,255,0.95)';
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.arc(badgeX + badgeSize/2, badgeY + badgeSize/2, badgeSize/2, 0, Math.PI*2);
+  ctx.stroke();
+}
+
+function drawText(){
+  const playerName = playerNameInput.value || 'Player Name';
+  const clubName = clubNameInput.value || 'Club Name';
+  const sponsor = sponsorInput.value || 'Sponsored by...';
+
+  // top bar
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.fillRect(0,0,1080,110);
+
+  ctx.fillStyle = '#fff';
+  ctx.font = '800 54px Inter, system-ui';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(clubName, 540, 55);
+
+  // lower panel
+  ctx.fillStyle = 'rgba(0,0,0,0.75)';
+  ctx.fillRect(0,860,1080,170);
+
+  ctx.fillStyle = '#fff';
+  ctx.font = '800 72px Inter, system-ui';
+  ctx.textAlign = 'center';
+  ctx.fillText(playerName, 590, 930);
+
+  ctx.font = '600 30px Inter, system-ui';
+  ctx.fillText(sponsor, 590, 1000);
+}
+
+/* Main render loop */
+function render(){
+  if(!needsRender) return;
+  needsRender = false;
+  ctx.clearRect(0,0,1080,1080);
+  drawBackground();
+  drawPlayer();
+  drawText();
+  drawBadge();
+}
+
+/* Animation frame loop for smooth updates */
+function rafLoop(){
+  render();
+  requestAnimationFrame(rafLoop);
+}
+requestAnimationFrame(rafLoop);
+
+/* Generate and download */
+function sanitizeFilename(name){
+  return name.trim().toLowerCase().replace(/[^a-z0-9\-]+/g,'-').replace(/^-+|-+$/g,'') || 'image-creator-pro';
+}
+
+$('generateBtn').addEventListener('click', () => {
+  needsRender = true;
+  status.textContent = 'Preview updated';
+});
+
+$('downloadBtn').addEventListener('click', async () => {
+  try{
+    clearError();
+    status.innerHTML = 'Preparing download <span class="spinner" aria-hidden="true"></span>';
+    // render at 2x for high-res
+    const scale = 2;
+    const exportCanvas = document.createElement('canvas');
+    exportCanvas.width = 1080 * scale;
+    exportCanvas.height = 1080 * scale;
+    const ectx = exportCanvas.getContext('2d', { alpha: false });
+
+    // draw scaled background
+    const g = ectx.createLinearGradient(0,0,exportCanvas.width,exportCanvas.height);
+    g.addColorStop(0, '#0f172a');
+    g.addColorStop(1, '#2563eb');
+    ectx.fillStyle = g;
+    ectx.fillRect(0,0,exportCanvas.width,exportCanvas.height);
+
+    // draw player image with transforms scaled
+    if(playerImg){
+      ectx.save();
+      ectx.translate(playerState.x * scale, playerState.y * scale);
+      ectx.rotate(playerState.rotation);
+      const drawW = playerImg.width * playerState.scale * scale;
+      const drawH = playerImg.height * playerState.scale * scale;
+      ectx.drawImage(playerImg, -drawW/2, -drawH/2, drawW, drawH);
+      ectx.restore();
+    }
+
+    // top bar
+    ectx.fillStyle = 'rgba(0,0,0,0.55)';
+    ectx.fillRect(0,0,exportCanvas.width,110*scale);
+
+    // club name
+    ectx.fillStyle = '#fff';
+    ectx.textAlign = 'center';
+    ectx.textBaseline = 'middle';
+    ectx.font = `800 ${54*scale}px Inter, system-ui`;
+    ectx.fillText(clubNameInput.value || 'Club Name', exportCanvas.width/2, 55*scale);
+
+    // lower panel
+    ectx.fillStyle = 'rgba(0,0,0,0.75)';
+    ectx.fillRect(0,860*scale,exportCanvas.width,170*scale);
+
+    ectx.fillStyle = '#fff';
+    ectx.font = `800 ${72*scale}px Inter, system-ui`;
+    ectx.fillText(playerNameInput.value || 'Player Name', 590*scale, 930*scale);
+
+    ectx.font = `600 ${30*scale}px Inter, system-ui`;
+    ectx.fillText(sponsorInput.value || 'Sponsored by...', 590*scale, 1000*scale);
+
+    // badge
+    if(badgeImg){
+      const badgeSize = 120*scale;
+      const badgeX = 40*scale;
+      const badgeY = 886*scale;
+      ectx.save();
+      ectx.beginPath();
+      ectx.arc(badgeX + badgeSize/2, badgeY + badgeSize/2, badgeSize/2, 0, Math.PI*2);
+      ectx.closePath();
+      ectx.clip();
+      ectx.drawImage(badgeImg, badgeX, badgeY, badgeSize, badgeSize);
+      ectx.restore();
+      ectx.strokeStyle = 'rgba(255,255,255,0.95)';
+      ectx.lineWidth = 5*scale;
+      ectx.beginPath();
+      ectx.arc(badgeX + badgeSize/2, badgeY + badgeSize/2, badgeSize/2, 0, Math.PI*2);
+      ectx.stroke();
+    }
+
+    // download
+    const filename = sanitizeFilename(playerNameInput.value || 'image-creator-pro') + '.png';
+    exportCanvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      status.textContent = 'Download ready';
+    }, 'image/png');
+  }catch(err){
+    showError('Failed to export image');
+    console.error(err);
+  }
+});
+
+/* Keyboard shortcuts */
+window.addEventListener('keydown', (e) => {
+  if(e.key.toLowerCase() === 'g') { needsRender = true; status.textContent = 'Preview updated'; }
+  if(e.key.toLowerCase() === 'd') { $('downloadBtn').click(); }
+});
+
+/* Error helpers */
+function showError(msg){
+  errorBox.hidden = false;
+  errorBox.textContent = msg;
+}
+function clearError(){
+  errorBox.hidden = true;
+  errorBox.textContent = '';
+}
+
+/* initial render */
+needsRender = true;
+</script>
 </body>
 </html>
