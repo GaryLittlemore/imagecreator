@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Image Creator Pro</title>
-
+<title>Sports Card Generator Pro</title>
 <style>
 body{
     font-family:Inter,Arial,sans-serif;
@@ -44,7 +43,7 @@ canvas{
 <body>
 
 <div class="panel">
-<h1>Image Creator Pro</h1>
+<h1>Sports Card Generator Pro</h1>
 
 <div class="row">
 <div>
@@ -81,145 +80,110 @@ let playerImg = null;
 let logoImg = null;
 
 document.getElementById('playerPhoto').addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    playerImg = new Image();
-    playerImg.onload = generateCard;
-    playerImg.src = URL.createObjectURL(file);
+  const file = e.target.files[0];
+  if (!file) return;
+  playerImg = new Image();
+  playerImg.onload = generateCard;
+  playerImg.src = URL.createObjectURL(file);
 });
 
 document.getElementById('teamLogo').addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    logoImg = new Image();
-    logoImg.onload = generateCard;
-    logoImg.src = URL.createObjectURL(file);
+  const file = e.target.files[0];
+  if (!file) return;
+  logoImg = new Image();
+  logoImg.onload = generateCard;
+  logoImg.src = URL.createObjectURL(file);
 });
 
 function fitText(text,maxWidth,startSize,weight='bold'){
-    let size = startSize;
-
-    while(size > 20){
-        ctx.font = `${weight} ${size}px Arial`;
-
-        if(ctx.measureText(text).width <= maxWidth){
-            return size;
-        }
-
-        size--;
-    }
-
-    return 20;
+  let size=startSize;
+  while(size>20){
+    ctx.font=`${weight} ${size}px Arial`;
+    if(ctx.measureText(text).width<=maxWidth) return size;
+    size--;
+  }
+  return 20;
 }
 
 function wrapText(text,x,y,maxWidth,lineHeight){
-    const words = text.split(' ');
-    let line = '';
-
-    for(let i=0;i<words.length;i++){
-        const test = line + words[i] + ' ';
-
-        if(ctx.measureText(test).width > maxWidth && i > 0){
-            ctx.fillText(line,x,y);
-            line = words[i] + ' ';
-            y += lineHeight;
-        }else{
-            line = test;
-        }
+  const words=text.split(' ');
+  let line='';
+  for(let i=0;i<words.length;i++){
+    const test=line+words[i]+' ';
+    if(ctx.measureText(test).width>maxWidth && i>0){
+      ctx.fillText(line,x,y);
+      line=words[i]+' ';
+      y+=lineHeight;
+    }else{
+      line=test;
     }
-
-    ctx.fillText(line,x,y);
+  }
+  ctx.fillText(line,x,y);
 }
 
 function generateCard(){
 
-    const player = document.getElementById('playerName').value;
-    const team = document.getElementById('teamName').value;
-    const bio = document.getElementById('playerText').value;
+  const player=document.getElementById('playerName').value;
+  const team=document.getElementById('teamName').value;
+  const bio=document.getElementById('playerText').value;
 
-    ctx.clearRect(0,0,1080,1350);
+  const grad=ctx.createLinearGradient(0,0,1080,1350);
+  grad.addColorStop(0,'#0f172a');
+  grad.addColorStop(1,'#1d4ed8');
 
-    const grad = ctx.createLinearGradient(0,0,1080,1350);
-    grad.addColorStop(0,'#0f172a');
-    grad.addColorStop(1,'#1d4ed8');
+  ctx.fillStyle=grad;
+  ctx.fillRect(0,0,1080,1350);
 
-    ctx.fillStyle = grad;
-    ctx.fillRect(0,0,1080,1350);
+  ctx.fillStyle='rgba(255,255,255,.08)';
+  ctx.beginPath();
+  ctx.arc(900,250,300,0,Math.PI*2);
+  ctx.fill();
 
-    ctx.fillStyle = 'rgba(255,255,255,.08)';
-    ctx.beginPath();
-    ctx.arc(900,250,300,0,Math.PI*2);
-    ctx.fill();
+  if(playerImg){
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(80,150,920,760,30);
+      ctx.clip();
+      ctx.drawImage(playerImg,80,150,920,760);
+      ctx.restore();
+  } else {
+      ctx.fillStyle='rgba(255,255,255,.15)';
+      ctx.roundRect(80,150,920,760,30);
+      ctx.fill();
+  }
 
-    /* TEAM NAME BANNER AT TOP */
+  ctx.fillStyle='rgba(0,0,0,.55)';
+  ctx.fillRect(80,760,920,150);
 
-    ctx.fillStyle = 'rgba(0,0,0,.35)';
-    ctx.beginPath();
-    ctx.roundRect(120,35,840,80,25);
-    ctx.fill();
+  let size=fitText(player,850,72);
+  ctx.fillStyle='white';
+  ctx.font=`bold ${size}px Arial`;
+  ctx.fillText(player,110,845);
 
-    ctx.fillStyle = '#ffffff';
-    ctx.font = `bold ${fitText(team,760,52)}px Arial`;
-    ctx.textAlign = 'center';
-    ctx.fillText(team,540,88);
-    ctx.textAlign = 'left';
+  ctx.font='34px Arial';
+  ctx.fillText(team,110,890);
 
-    /* PLAYER IMAGE */
+  if(logoImg){
+      ctx.drawImage(logoImg,850,980,150,150);
+  }
 
-    if(playerImg){
-        ctx.save();
-        ctx.beginPath();
-        ctx.roundRect(80,150,920,760,30);
-        ctx.clip();
-        ctx.drawImage(playerImg,80,150,920,760);
-        ctx.restore();
-    } else {
-        ctx.fillStyle = 'rgba(255,255,255,.15)';
-        ctx.beginPath();
-        ctx.roundRect(80,150,920,760,30);
-        ctx.fill();
-    }
+  ctx.fillStyle='white';
+  ctx.font='bold 44px Arial';
+  ctx.fillText('Sponsored by',80,1010);
 
-    /* PLAYER NAME STRIP */
+  ctx.font='32px Arial';
+  wrapText(bio,80,1080,800,42);
 
-    ctx.fillStyle = 'rgba(0,0,0,.55)';
-    ctx.fillRect(80,760,920,150);
-
-    let size = fitText(player,850,72);
-
-    ctx.fillStyle = 'white';
-    ctx.font = `bold ${size}px Arial`;
-    ctx.fillText(player,110,845);
-
-    /* TEAM LOGO */
-
-    if(logoImg){
-        ctx.drawImage(logoImg,850,980,150,150);
-    }
-
-    /* SPONSOR SECTION */
-
-    ctx.fillStyle = 'white';
-    ctx.font = 'bold 44px Arial';
-    ctx.fillText('Sponsored by',80,1010);
-
-    ctx.font = '32px Arial';
-    wrapText(bio,80,1080,800,42);
-
-    /* BORDER */
-
-    ctx.strokeStyle = 'rgba(255,255,255,.3)';
-    ctx.lineWidth = 4;
-    ctx.strokeRect(25,25,1030,1300);
+  ctx.strokeStyle='rgba(255,255,255,.3)';
+  ctx.lineWidth=4;
+  ctx.strokeRect(25,25,1030,1300);
 }
 
 function downloadCard(){
-    const link = document.createElement('a');
-    link.download = 'sports-card.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+  const link=document.createElement('a');
+  link.download='sports-card.png';
+  link.href=canvas.toDataURL('image/png');
+  link.click();
 }
 
 generateCard();
